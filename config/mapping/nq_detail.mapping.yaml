@@ -1,0 +1,110 @@
+# Mapping: nq_detail_training → FHIR QuestionnaireResponse + Observation
+# ========================================================================
+
+source:
+  file_pattern: "*nq-detail_training*"
+  id_column: "Assessment UUID"
+  patient_column: "Patient UUID"
+  # NQ detail has multiple rows per assessment (one per question per subtest)
+  group_by: ["Assessment UUID", "Module UUID", "Key"]
+  description: "Neuro-QoL (CAT) detail responses with T-Scores"
+
+targets:
+  # --- Target 1: QuestionnaireResponse (grouped by subtest Key) ---
+  - resource_type: "QuestionnaireResponse"
+    profile: "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-NeuroQoL"
+    id_template: "qr-nq-{Assessment UUID}-{Key}"
+    group_by: ["Assessment UUID", "Module UUID", "Key"]
+
+    static_fields:
+      status: "completed"
+      questionnaire: "https://digiphenoms.tu-dresden.de/fhir/Questionnaire/neuro-qol"
+
+    field_mappings:
+      - source: "Patient UUID"
+        target: "subject"
+        type: "reference"
+        reference_type: "Patient"
+        id_template: "pat-{value}"
+
+      - source: "Assessment UUID"
+        target: "encounter"
+        type: "reference"
+        reference_type: "Encounter"
+        id_template: "enc-{value}"
+
+      - source: "Subtest Started At"
+        target: "authored"
+        type: "datetime"
+        format: "%Y-%m-%dT%H:%M:%SZ"
+
+    # Items are generated from grouped rows
+    items_from_rows:
+      text_source: "Question Title"
+      answer_source: "Response Value"
+      answer_type: "valueInteger"
+      display_source: "User Response"
+
+  # --- Target 2: Observation (aggregated T-Score per subtest) ---
+  - resource_type: "Observation"
+    profile: "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-NeuroQoL-Score"
+    id_template: "obs-nq-{Assessment UUID}-{Key}"
+    # Use the last row per group (carries the final T-Score)
+    aggregate: "last"
+    group_by: ["Assessment UUID", "Module UUID", "Key"]
+
+    static_fields:
+      category:
+        - system: "http://terminology.hl7.org/CodeSystem/observation-category"
+          code: "survey"
+          display: "Survey"
+      code:
+        system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms"
+        code: "neuro-qol-tscore"
+        display: "Neuro-QoL T-Score"
+
+    primary_value:
+      source: "T Score"
+      value_type: "valueQuantity"
+      unit: "{T-score}"
+      unit_system: "http://unitsofmeasure.org"
+
+    field_mappings:
+      - source: "Patient UUID"
+        target: "subject"
+        type: "reference"
+        reference_type: "Patient"
+        id_template: "pat-{value}"
+
+      - source: "Assessment UUID"
+        target: "encounter"
+        type: "reference"
+        reference_type: "Encounter"
+        id_template: "enc-{value}"
+
+      - source: "Subtest Ended At"
+        target: "effectiveDateTime"
+        type: "datetime"
+        format: "%Y-%m-%dT%H:%M:%SZ"
+
+      - source: "Key"
+        target: "code.coding[1]"
+        type: "coded"
+        terminology_map: "terminology/neuroqol_domains_conceptmap.yaml"
+
+    components:
+      - source: "Standard Error"
+        code:
+          system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms"
+          code: "standard-error"
+          display: "Standard Error"
+        value_type: "valueQuantity"
+        unit: "{T-score}"
+
+      - source: "Raw Score"
+        code:
+          system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms"
+          code: "raw-score"
+          display: "Raw Score"
+        value_type: "valueQuantity"
+        unit: "{score}"

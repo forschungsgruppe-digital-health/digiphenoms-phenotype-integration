@@ -1,0 +1,62 @@
+# ConceptMap: Neuro-QoL Subdomains → LOINC Codes
+# ================================================
+
+concept_map:
+  id: "digiphenoms-neuroqol-domains-map"
+  name: "DigiPhenoMS Neuro-QoL Domain ConceptMap"
+  source_system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/neuro-qol-domains"
+  target_systems:
+    primary: "http://loinc.org"
+
+  mappings:
+    anxiety:
+      display_source: "Anxiety"
+      loinc_code: "67903-5"
+      loinc_display: "Neuro-Qol short form - anxiety - version 1.0"
+      equivalence: "equivalent"
+
+    fatigue:
+      display_source: "Fatigue"
+      loinc_code: "67905-0"
+      loinc_display: "Neuro-Qol short form - fatigue - version 1.0"
+      equivalence: "equivalent"
+
+    upper_extremity:
+      display_source: "Upper Extremity Function"
+      loinc_code: "67906-8"
+      loinc_display: "Neuro-Qol short form - upper extremity function - version 1.0"
+      equivalence: "equivalent"
+
+    lower_extremity:
+      display_source: "Lower Extremity Function"
+      loinc_code: "67907-6"
+      loinc_display: "Neuro-Qol short form - lower extremity function - version 1.0"
+      equivalence: "equivalent"
+
+    depression:
+      display_source: "Depression"
+      loinc_code: "67904-3"
+      loinc_display: "Neuro-Qol short form - depression - version 1.0"
+      equivalence: "equivalent"
+
+    cognitive_function:
+      display_source: "Cognitive Function"
+      loinc_code: "67902-7"
+      loinc_display: "Neuro-Qol short form - cognitive function - version 1.0"
+      equivalence: "equivalent"
+
+    sleep:
+      display_source: "Sleep Disturbance"
+      loinc_code: "67908-4"
+      loinc_display: "Neuro-Qol short form - sleep disturbance - version 1.0"
+      equivalence: "equivalent"
+
+    satisfaction_social_roles:
+      display_source: "Satisfaction with Social Roles"
+      loinc_code: "67909-2"
+      loinc_display: "Neuro-Qol short form - satisfaction with social roles - version 1.0"
+      equivalence: "equivalent"
+
+    _default:
+      note: "Unmapped Neuro-QoL domain - use custom DigiPhenoMS code"
+      equivalence: "unmatched"

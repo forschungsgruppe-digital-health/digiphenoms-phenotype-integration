@@ -1,0 +1,80 @@
+# Mapping: npst_summary_training → FHIR Observation (SDMT)
+# ===========================================================
+
+source:
+  file_pattern: "*npst-summary_training*"
+  id_column: "Assessment UUID"
+  patient_column: "Patient UUID"
+  description: "Neuropsychological Symbol Test (SDMT) summary results"
+
+targets:
+  - resource_type: "Observation"
+    profile: "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-SDMT"
+    id_template: "obs-sdmt-{Assessment UUID}-{Module UUID}"
+
+    static_fields:
+      category:
+        - system: "http://terminology.hl7.org/CodeSystem/observation-category"
+          code: "exam"
+          display: "Exam"
+      code:
+        # No standard LOINC for SDMT (72172-0 was incorrectly MoCA)
+        system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms"
+        code: "sdmt-test"
+        display: "Symbol Digit Modalities Test (SDMT)"
+        additional_codings:
+          - system: "http://snomed.info/sct"
+            code: "273857000"
+            display: "Symbol digit modalities test"
+            # Semantic tag: assessment scale | Verified against SNOMED CT INT 20260401
+
+    status_mapping:
+      source: "Canceled"
+      mapping:
+        "True": "cancelled"
+        "False": "final"
+      default: "final"
+
+    # Primary value: Total Number Correct
+    primary_value:
+      source: "Total Number Correct"
+      value_type: "valueQuantity"
+      unit: "{score}"
+      unit_system: "http://unitsofmeasure.org"
+
+    field_mappings:
+      - source: "Patient UUID"
+        target: "subject"
+        type: "reference"
+        reference_type: "Patient"
+        id_template: "pat-{value}"
+
+      - source: "Assessment UUID"
+        target: "encounter"
+        type: "reference"
+        reference_type: "Encounter"
+        id_template: "enc-{value}"
+
+      - source: "Module Started At"
+        target: "effectiveDateTime"
+        type: "datetime"
+        format: "%a, %d %b %Y %H:%M:%S %z"
+
+    components:
+      - source: "Total Number Incorrect"
+        code:
+          system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms"
+          code: "sdmt-total-incorrect"
+          display: "SDMT Total Number Incorrect"
+        value_type: "valueQuantity"
+        unit: "{score}"
+        unit_system: "http://unitsofmeasure.org"
+
+      - source: "Z-Score"
+        code:
+          system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms"
+          code: "sdmt-zscore"
+          display: "SDMT Z-Score"
+        value_type: "valueQuantity"
+        unit: "{z-score}"
+        unit_system: "http://unitsofmeasure.org"

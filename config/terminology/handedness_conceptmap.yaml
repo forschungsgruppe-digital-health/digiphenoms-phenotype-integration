@@ -1,0 +1,36 @@
+# ConceptMap: Handedness → SNOMED CT
+# =====================================
+# Verified against SNOMED CT INT 20260401
+
+concept_map:
+  id: "digiphenoms-handedness-map"
+  name: "DigiPhenoMS Handedness ConceptMap"
+  source_system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/handedness"
+  target_systems:
+    primary: "http://snomed.info/sct"
+
+  mappings:
+    right:
+      display_source: "Right-handed"
+      snomed_code: "46669005"
+      snomed_display: "Right handed"
+      snomed_fsn: "Right handed (finding)"
+      equivalence: "equivalent"
+
+    left:
+      display_source: "Left-handed"
+      snomed_code: "87683000"
+      snomed_display: "Left handed"
+      snomed_fsn: "Left handed (finding)"
+      equivalence: "equivalent"
+
+    ambidextrous:
+      display_source: "Ambidextrous"
+      snomed_code: "23088002"
+      snomed_display: "Ambidextrous"
+      snomed_fsn: "Ambidextrous (finding)"
+      equivalence: "equivalent"
+
+    _default:
+      note: "Unmapped handedness value"
+      equivalence: "unmatched"

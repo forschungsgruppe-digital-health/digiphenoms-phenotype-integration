@@ -1,0 +1,91 @@
+# Mapping: wrapper_overview_training → FHIR Encounter + Device
+# ==============================================================
+
+source:
+  file_pattern: "*wrapper-overview_training*"
+  id_column: "Assessment UUID"
+  patient_column: "Patient UUID"
+  description: "Assessment session metadata and device information"
+
+targets:
+  # --- Target 1: FHIR Encounter ---
+  - resource_type: "Encounter"
+    profile: "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-Encounter"
+    id_template: "enc-{Assessment UUID}"
+
+    static_fields:
+      class:
+        system: "http://terminology.hl7.org/CodeSystem/v3-ActCode"
+        code: "AMB"
+        display: "ambulatory"
+      type:
+        - system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms"
+          code: "mspt-assessment"
+          display: "MSPT Assessment Session"
+      status: "finished"
+
+    field_mappings:
+      - source: "Assessment UUID"
+        target: "identifier[0].value"
+        type: "string"
+        identifier_system: "$namespaces.assessment_system"
+
+      - source: "Patient UUID"
+        target: "subject"
+        type: "reference"
+        reference_type: "Patient"
+        id_template: "pat-{value}"
+
+      - source: "Assessor UUID"
+        target: "participant[0].individual"
+        type: "reference"
+        reference_type: "Practitioner"
+        id_template: "pract-{value}"
+
+      - source: "Assessment Started At"
+        target: "period.start"
+        type: "datetime"
+        format: "%a, %d %b %Y %H:%M:%S %z"
+
+      - source: "Assessment Ended At"
+        target: "period.end"
+        type: "datetime"
+        format: "%a, %d %b %Y %H:%M:%S %z"
+
+      - source: "Organization"
+        target: "serviceProvider.display"
+        type: "string"
+
+      - source: "Successful Module Count"
+        target: "extension[0]"
+        type: "extension"
+        extension_url: "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/successful-module-count"
+        value_type: "valueInteger"
+
+  # --- Target 2: FHIR Device ---
+  - resource_type: "Device"
+    profile: "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-Device"
+    id_template: "device-{Vendor Identifier}"
+    # Deduplicate: same device may appear in multiple assessments
+    deduplicate_by: "Vendor Identifier"
+
+    field_mappings:
+      - source: "Device Type"
+        target: "type.text"
+        type: "string"
+
+      - source: "Device Name"
+        target: "deviceName[0].name"
+        type: "string"
+
+      - source: "Vendor Identifier"
+        target: "identifier[0].value"
+        type: "string"
+
+      - source: "App Version"
+        target: "version[0].value"
+        type: "string"
+
+      - source: "IOS Version"
+        target: "property[0].valueCode[0].text"
+        type: "string"

@@ -1,0 +1,118 @@
+# Mapping: wst_summary_training → FHIR Observation (T25FW)
+# ===========================================================
+
+source:
+  file_pattern: "*wst-summary_training*"
+  id_column: "Assessment UUID"
+  patient_column: "Patient UUID"
+  description: "Walking Speed Test (Timed 25-Foot Walk) summary results"
+
+targets:
+  - resource_type: "Observation"
+    profile: "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-T25FW"
+    id_template: "obs-t25fw-{Assessment UUID}-{Module UUID}"
+
+    static_fields:
+      category:
+        - system: "http://terminology.hl7.org/CodeSystem/observation-category"
+          code: "exam"
+          display: "Exam"
+      code:
+        # No verified LOINC for T25FW (79877-7 unconfirmed)
+        system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms"
+        code: "t25fw-test"
+        display: "Timed 25-Foot Walk (T25FW)"
+        additional_codings:
+          - system: "http://snomed.info/sct"
+            code: "724237005"
+            display: "Gait speed"
+            # Semantic tag: observable entity | Verified against SNOMED CT INT 20260401
+
+    status_mapping:
+      source: "Canceled"
+      mapping:
+        "True": "cancelled"
+        "False": "final"
+      default: "final"
+
+    primary_value:
+      source: "Walk Duration"
+      value_type: "valueQuantity"
+      unit: "s"
+      unit_system: "http://unitsofmeasure.org"
+
+    field_mappings:
+      - source: "Patient UUID"
+        target: "subject"
+        type: "reference"
+        reference_type: "Patient"
+        id_template: "pat-{value}"
+
+      - source: "Assessment UUID"
+        target: "encounter"
+        type: "reference"
+        reference_type: "Encounter"
+        id_template: "enc-{value}"
+
+      - source: "Module Started At"
+        target: "effectiveDateTime"
+        type: "datetime"
+        format: "%a, %d %b %Y %H:%M:%S %z"
+
+    components:
+      - source: "Z-Score"
+        code:
+          system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms"
+          code: "t25fw-zscore"
+          display: "T25FW Z-Score"
+        value_type: "valueQuantity"
+        unit: "{z-score}"
+        unit_system: "http://unitsofmeasure.org"
+
+      - source: "Walking Aid Used"
+        code:
+          system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms"
+          code: "walking-aid-used"
+          display: "Walking Aid Used"
+        value_type: "valueBoolean"
+
+      - source: "Walking Aid Choice"
+        code:
+          system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms"
+          code: "walking-aid-choice"
+          display: "Walking Aid Choice"
+        value_type: "valueCodeableConcept"
+        terminology_map: "terminology/walking_aids_conceptmap.yaml"
+
+      - source: "AFO Used"
+        code:
+          system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms"
+          code: "afo-used"
+          display: "Ankle-Foot Orthosis Used"
+        value_type: "valueBoolean"
+
+      - source: "AFO Choice"
+        code:
+          system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms"
+          code: "afo-choice"
+          display: "AFO Side (right/left/both)"
+        value_type: "valueCodeableConcept"
+        condition: "value is not empty"
+
+      - source: "Successful Trials"
+        code:
+          system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms"
+          code: "successful-trials"
+          display: "Successful Walking Trials"
+        value_type: "valueQuantity"
+        unit: "{count}"
+        unit_system: "http://unitsofmeasure.org"
+
+      - source: "Unsuccessful Trials"
+        code:
+          system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms"
+          code: "unsuccessful-trials"
+          display: "Unsuccessful Walking Trials"
+        value_type: "valueQuantity"
+        unit: "{count}"
+        unit_system: "http://unitsofmeasure.org"

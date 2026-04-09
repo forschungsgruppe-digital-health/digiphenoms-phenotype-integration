@@ -1,0 +1,278 @@
+# Mapping: mrt_data → FHIR DiagnosticReport + Observation (MRI)
+# ================================================================
+
+source:
+  file_pattern: "*mrt*"
+  id_column: "unnamed__0"       # Row index as fallback ID
+  patient_column: "patientalias"
+  description: "MRI volumetry and lesion segmentation results"
+
+targets:
+  # --- Target 1: DiagnosticReport (MRI Befund) ---
+  - resource_type: "DiagnosticReport"
+    profile: "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-MRI-Report"
+    id_template: "diag-mri-{patientalias}-{sty_date}"
+
+    static_fields:
+      category:
+        - system: "http://terminology.hl7.org/CodeSystem/v2-0074"
+          code: "RAD"
+          display: "Radiology"
+      code:
+        system: "http://loinc.org"
+        code: "30799-1"
+        display: "MR Brain WO contrast"
+        additional_codings:
+          - system: "http://snomed.info/sct"
+            code: "698354004"
+            display: "Magnetic resonance imaging for measurement of brain volume"
+            # Semantic tag: procedure | Verified against SNOMED CT INT 20260401
+      status: "final"
+
+    field_mappings:
+      - source: "patientalias"
+        target: "subject"
+        type: "reference"
+        reference_type: "Patient"
+        id_template: "pat-{value}"
+
+      - source: "sty_date"
+        target: "effectiveDateTime"
+        type: "date"
+        format: "%Y-%m-%d"
+
+      - source: "segvisqc"
+        target: "conclusion"
+        type: "string"
+        prefix: "Segmentation QC: "
+
+      - source: "segcomm"
+        target: "conclusionCode[0].text"
+        type: "string"
+        condition: "value is not empty"
+
+    # References to child Observations (generated dynamically)
+    result_references:
+      - "obs-mri-atrophy-{patientalias}-{sty_date}"
+      - "obs-mri-lesions-{patientalias}-{sty_date}"
+      - "obs-mri-tissue-{patientalias}-{sty_date}"
+      - "obs-mri-thalamus-{patientalias}-{sty_date}"
+
+  # --- Target 2: Observation (Brain Atrophy) ---
+  - resource_type: "Observation"
+    profile: "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-MRI-Atrophy"
+    id_template: "obs-mri-atrophy-{patientalias}-{sty_date}"
+
+    static_fields:
+      category:
+        - system: "http://terminology.hl7.org/CodeSystem/observation-category"
+          code: "imaging"
+      code:
+        system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms"
+        code: "mri-brain-atrophy"
+        display: "Brain Atrophy Measures"
+        additional_codings:
+          - system: "http://snomed.info/sct"
+            code: "278849000"
+            display: "Cerebral atrophy"
+      bodySite:
+        system: "http://snomed.info/sct"
+        code: "12738006"
+        display: "Brain structure"
+
+    field_mappings:
+      - source: "patientalias"
+        target: "subject"
+        type: "reference"
+        reference_type: "Patient"
+        id_template: "pat-{value}"
+      - source: "sty_date"
+        target: "effectiveDateTime"
+        type: "date"
+        format: "%Y-%m-%d"
+
+    components:
+      - source: "bpf"
+        code:
+          system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms"
+          code: "bpf"
+          display: "Brain Parenchymal Fraction"
+        value_type: "valueQuantity"
+        unit: "{ratio}"
+        unit_system: "http://unitsofmeasure.org"
+
+      - source: "bpf_chg"
+        code:
+          system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms"
+          code: "bpf-change"
+          display: "BPF Change from Previous"
+        value_type: "valueQuantity"
+        unit: "{ratio}"
+        unit_system: "http://unitsofmeasure.org"
+
+  # --- Target 3: Observation (T2 Lesions) ---
+  - resource_type: "Observation"
+    profile: "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-MRI-Lesions"
+    id_template: "obs-mri-lesions-{patientalias}-{sty_date}"
+
+    static_fields:
+      category:
+        - system: "http://terminology.hl7.org/CodeSystem/observation-category"
+          code: "imaging"
+      code:
+        system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms"
+        code: "mri-t2-lesions"
+        display: "T2 Lesion Measures"
+        additional_codings:
+          - system: "http://snomed.info/sct"
+            code: "1145374006"
+            display: "Focal white matter lesion"
+            # Semantic tag: disorder | Verified against SNOMED CT INT 20260401
+      bodySite:
+        system: "http://snomed.info/sct"
+        code: "68523003"
+        display: "Cerebral white matter structure"
+
+    field_mappings:
+      - source: "patientalias"
+        target: "subject"
+        type: "reference"
+        reference_type: "Patient"
+        id_template: "pat-{value}"
+      - source: "sty_date"
+        target: "effectiveDateTime"
+        type: "date"
+        format: "%Y-%m-%d"
+
+    components:
+      - source: "t2lesvol"
+        code: { system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms", code: "t2-lesion-volume", display: "Total T2 Lesion Volume" }
+        value_type: "valueQuantity"
+        unit: "mL"
+        unit_system: "http://unitsofmeasure.org"
+
+      - source: "t2overbv"
+        code: { system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms", code: "t2-over-brain-volume", display: "T2 Lesion Load / Brain Volume" }
+        value_type: "valueQuantity"
+        unit: "{ratio}"
+
+      - source: "nt2lescn"
+        code: { system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms", code: "new-t2-lesion-count", display: "New/Enlarged T2 Lesion Count" }
+        value_type: "valueQuantity"
+        unit: "{count}"
+
+      - source: "nt2lesvo"
+        code: { system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms", code: "new-t2-lesion-volume", display: "New/Enlarged T2 Lesion Volume" }
+        value_type: "valueQuantity"
+        unit: "mL"
+
+      - source: "t2voljux"
+        code: { system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms", code: "t2-juxtacortical", display: "Juxtacortical T2 Lesion Volume" }
+        value_type: "valueQuantity"
+        unit: "mL"
+
+      - source: "t2volprv"
+        code: { system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms", code: "t2-periventricular", display: "Periventricular T2 Lesion Volume" }
+        value_type: "valueQuantity"
+        unit: "mL"
+
+      - source: "t2volinf"
+        code: { system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms", code: "t2-infratentorial", display: "Infratentorial T2 Lesion Volume" }
+        value_type: "valueQuantity"
+        unit: "mL"
+
+  # --- Target 4: Observation (Tissue Fractions) ---
+  - resource_type: "Observation"
+    id_template: "obs-mri-tissue-{patientalias}-{sty_date}"
+    static_fields:
+      category:
+        - system: "http://terminology.hl7.org/CodeSystem/observation-category"
+          code: "imaging"
+      code:
+        system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms"
+        code: "mri-tissue-fractions"
+        display: "Brain Tissue Fractions"
+      bodySite:
+        system: "http://snomed.info/sct"
+        code: "12738006"
+        display: "Brain structure"
+
+    field_mappings:
+      - source: "patientalias"
+        target: "subject"
+        type: "reference"
+        reference_type: "Patient"
+        id_template: "pat-{value}"
+      - source: "sty_date"
+        target: "effectiveDateTime"
+        type: "date"
+        format: "%Y-%m-%d"
+
+    components:
+      - source: "gmf"
+        code: { system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms", code: "grey-matter-fraction", display: "Grey Matter Fraction" }
+        value_type: "valueQuantity"
+        unit: "{ratio}"
+
+      - source: "wmf"
+        code: { system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms", code: "white-matter-fraction", display: "White Matter Fraction" }
+        value_type: "valueQuantity"
+        unit: "{ratio}"
+
+      - source: "cgmvol"
+        code: { system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms", code: "cortical-gm-volume", display: "Cortical Grey Matter Volume" }
+        value_type: "valueQuantity"
+        unit: "mL"
+
+      - source: "dgmvol"
+        code: { system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms", code: "deep-gm-volume", display: "Deep Grey Matter Volume" }
+        value_type: "valueQuantity"
+        unit: "mL"
+
+      - source: "cgmf"
+        code: { system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms", code: "cortical-gm-fraction", display: "Cortical Grey Matter Fraction" }
+        value_type: "valueQuantity"
+        unit: "{ratio}"
+
+      - source: "dgmf"
+        code: { system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms", code: "deep-gm-fraction", display: "Deep Grey Matter Fraction" }
+        value_type: "valueQuantity"
+        unit: "{ratio}"
+
+  # --- Target 5: Observation (Thalamus) ---
+  - resource_type: "Observation"
+    id_template: "obs-mri-thalamus-{patientalias}-{sty_date}"
+    static_fields:
+      category:
+        - system: "http://terminology.hl7.org/CodeSystem/observation-category"
+          code: "imaging"
+      code:
+        system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms"
+        code: "mri-thalamus"
+        display: "Thalamus Volumetry"
+      bodySite:
+        system: "http://snomed.info/sct"
+        code: "42695009"
+        display: "Thalamic structure"
+
+    field_mappings:
+      - source: "patientalias"
+        target: "subject"
+        type: "reference"
+        reference_type: "Patient"
+        id_template: "pat-{value}"
+      - source: "sty_date"
+        target: "effectiveDateTime"
+        type: "date"
+        format: "%Y-%m-%d"
+
+    components:
+      - source: "thalvol"
+        code: { system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms", code: "thalamus-volume", display: "Thalamus Volume" }
+        value_type: "valueQuantity"
+        unit: "mL"
+
+      - source: "thalf"
+        code: { system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms", code: "thalamus-fraction", display: "Thalamus Fraction" }
+        value_type: "valueQuantity"
+        unit: "{ratio}"

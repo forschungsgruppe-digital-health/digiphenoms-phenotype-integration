@@ -1,0 +1,50 @@
+# Mapping: mh_detail_training → FHIR QuestionnaireResponse
+# ==========================================================
+
+source:
+  file_pattern: "*mh-detail_training*"
+  id_column: "Assessment UUID"
+  patient_column: "Patient UUID"
+  group_by: ["Assessment UUID", "Module UUID"]
+  description: "Medical history questionnaire responses"
+
+targets:
+  - resource_type: "QuestionnaireResponse"
+    profile: "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-MedicalHistory"
+    id_template: "qr-mh-{Assessment UUID}-{Module UUID}"
+    group_by: ["Assessment UUID", "Module UUID"]
+
+    static_fields:
+      status: "completed"
+      questionnaire: "https://digiphenoms.tu-dresden.de/fhir/Questionnaire/medical-history"
+
+    field_mappings:
+      - source: "Patient UUID"
+        target: "subject"
+        type: "reference"
+        reference_type: "Patient"
+        id_template: "pat-{value}"
+
+      - source: "Assessment UUID"
+        target: "encounter"
+        type: "reference"
+        reference_type: "Encounter"
+        id_template: "enc-{value}"
+
+      - source: "Module Started At"
+        target: "authored"
+        type: "datetime"
+        format: "%a, %d %b %Y %H:%M:%S %z"
+
+    # Items are generated from grouped rows
+    items_from_rows:
+      linkId_source: "Question Key"
+      text_source: "Question Title"
+      answer_source: "Response Key"
+      answer_display_source: "Entered Response"
+      answer_type: "valueString"
+      section_source: "Section Name"
+      # Only include displayed questions
+      filter:
+        column: "Displayed"
+        value: "True"

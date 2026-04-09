@@ -1,0 +1,4 @@
+Patient UUID,Organization,DOB,Gender,Handedness,Preferred Language,Date of Diagnosis,Comorbidities,Created At,consent_status
+abc-1001,Dresden Carus,01-06-1985,female,right,de,15-03-2018,depression#high_blood_pressure,Mon 10 Jan 2022 09:00:00 +0000,granted
+abc-1002,Dresden Carus,01-11-1978,male,left,de,22-07-2015,diabetes,Tue 11 Jan 2022 10:30:00 +0000,granted
+abc-1003,Dresden Carus,01-03-1992,female,right,de,05-01-2021,,Wed 12 Jan 2022 08:15:00 +0000,granted

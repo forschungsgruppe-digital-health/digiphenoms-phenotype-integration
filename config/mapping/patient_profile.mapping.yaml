@@ -1,0 +1,118 @@
+# Mapping: patient_profile_data → FHIR Patient + Condition
+# =========================================================
+
+source:
+  file_pattern: "*patient-profile-overview_training*"
+  id_column: "Patient UUID"
+  patient_column: "Patient UUID"
+  description: "Patient demographics and diagnosis information"
+
+targets:
+  # --- Target 1: FHIR Patient ---
+  - resource_type: "Patient"
+    profile: "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-Patient"
+    id_template: "pat-{Patient UUID}"
+
+    field_mappings:
+      - source: "Patient UUID"
+        target: "identifier[0].value"
+        type: "string"
+        identifier_system: "$namespaces.patient_system"
+
+      - source: "Organization"
+        target: "managingOrganization.display"
+        type: "string"
+
+      - source: "DOB"
+        target: "birthDate"
+        type: "date"
+        format: "%d-%m-%Y"
+        target_format: "%Y-%m-%d"
+
+      - source: "Gender"
+        target: "gender"
+        type: "code"
+        value_map:
+          female: "female"
+          male: "male"
+
+      - source: "Preferred Language"
+        target: "communication[0].language.coding[0].code"
+        type: "code"
+        code_system: "urn:ietf:bcp:47"
+
+      - source: "Handedness"
+        target: "extension[0]"
+        type: "extension"
+        extension_url: "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/handedness"
+        value_type: "valueCode"
+
+      - source: "Created At"
+        target: "meta.lastUpdated"
+        type: "datetime"
+        format: "%a, %d %b %Y %H:%M:%S %z"
+
+  # --- Target 2: FHIR Condition (MS Diagnosis) ---
+  - resource_type: "Condition"
+    profile: "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-MSCondition"
+    id_template: "cond-ms-{Patient UUID}"
+    # Only create if Date of Diagnosis is present
+    condition: "Date of Diagnosis is not empty"
+
+    static_fields:
+      code:
+        system: "http://snomed.info/sct"
+        code: "24700007"
+        display: "Multiple sclerosis"
+      clinicalStatus:
+        system: "http://terminology.hl7.org/CodeSystem/condition-clinical"
+        code: "active"
+      verificationStatus:
+        system: "http://terminology.hl7.org/CodeSystem/condition-ver-status"
+        code: "confirmed"
+      category:
+        system: "http://terminology.hl7.org/CodeSystem/condition-category"
+        code: "encounter-diagnosis"
+
+    field_mappings:
+      - source: "Patient UUID"
+        target: "subject"
+        type: "reference"
+        reference_type: "Patient"
+        id_template: "pat-{value}"
+
+      - source: "Date of Diagnosis"
+        target: "onsetDateTime"
+        type: "date"
+        format: "%d-%m-%Y"
+        target_format: "%Y-%m-%d"
+
+  # --- Target 3: FHIR Condition (Comorbidities) ---
+  - resource_type: "Condition"
+    profile: "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-Comorbidity"
+    id_template: "cond-comorbid-{Patient UUID}-{_split_index}"
+    # Split comorbidities by '#' separator → one Condition per comorbidity
+    split_source: "Comorbidities"
+    split_delimiter: "#"
+    condition: "Comorbidities is not empty"
+
+    static_fields:
+      clinicalStatus:
+        system: "http://terminology.hl7.org/CodeSystem/condition-clinical"
+        code: "active"
+      category:
+        system: "http://terminology.hl7.org/CodeSystem/condition-category"
+        code: "problem-list-item"
+
+    field_mappings:
+      - source: "Patient UUID"
+        target: "subject"
+        type: "reference"
+        reference_type: "Patient"
+        id_template: "pat-{value}"
+
+      - source: "_split_value"
+        target: "code"
+        type: "coded"
+        terminology_map: "terminology/comorbidity_conceptmap.yaml"
+        fallback_system: "$namespaces.custom_code_system"

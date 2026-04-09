@@ -1,0 +1,121 @@
+# Mapping: mdt_summary_training → FHIR Observation (9-Hole Peg Test)
+# ====================================================================
+
+source:
+  file_pattern: "*mdt-summary_training*"
+  id_column: "Assessment UUID"
+  patient_column: "Patient UUID"
+  description: "Manual Dexterity Test (9HPT) summary results"
+
+targets:
+  - resource_type: "Observation"
+    profile: "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-9HPT"
+    id_template: "obs-9hpt-{Assessment UUID}-{Module UUID}"
+
+    static_fields:
+      category:
+        - system: "http://terminology.hl7.org/CodeSystem/observation-category"
+          code: "exam"
+          display: "Exam"
+      code:
+        system: "http://loinc.org"
+        code: "83141-2"
+        display: "9-Hole Pegboard Dexterity Test"
+        additional_codings:
+          - system: "http://snomed.info/sct"
+            code: "273648008"
+            display: "Nine hole peg test"
+            # Semantic tag: assessment scale | Verified against SNOMED CT INT 20260401
+
+    status_mapping:
+      source: "Canceled"
+      mapping:
+        "True": "cancelled"
+        "False": "final"
+      default: "final"
+
+    field_mappings:
+      - source: "Patient UUID"
+        target: "subject"
+        type: "reference"
+        reference_type: "Patient"
+        id_template: "pat-{value}"
+
+      - source: "Assessment UUID"
+        target: "encounter"
+        type: "reference"
+        reference_type: "Encounter"
+        id_template: "enc-{value}"
+
+      - source: "Module Started At"
+        target: "effectiveDateTime"
+        type: "datetime"
+        format: "%a, %d %b %Y %H:%M:%S %z"
+
+      - source: "Cancel Reason"
+        target: "note[0].text"
+        type: "string"
+        condition: "value is not empty"
+
+    components:
+      - source: "Z-Score Dominant"
+        code:
+          system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms"
+          code: "9hpt-zscore-dominant"
+          display: "9HPT Z-Score Dominant Hand"
+        value_type: "valueQuantity"
+        unit: "{z-score}"
+        unit_system: "http://unitsofmeasure.org"
+
+      - source: "Z-Score Nondominant"
+        code:
+          system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms"
+          code: "9hpt-zscore-nondominant"
+          display: "9HPT Z-Score Nondominant Hand"
+        value_type: "valueQuantity"
+        unit: "{z-score}"
+        unit_system: "http://unitsofmeasure.org"
+
+      - source: "Left Hand Time"
+        code:
+          system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms"
+          code: "9hpt-left-hand-time"
+          display: "9HPT Left Hand Time"
+        value_type: "valueQuantity"
+        unit: "s"
+        unit_system: "http://unitsofmeasure.org"
+
+      - source: "Right Hand Time"
+        code:
+          system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms"
+          code: "9hpt-right-hand-time"
+          display: "9HPT Right Hand Time"
+        value_type: "valueQuantity"
+        unit: "s"
+        unit_system: "http://unitsofmeasure.org"
+
+      - source: "Dominant Hand"
+        code:
+          system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms"
+          code: "dominant-hand"
+          display: "Dominant Hand"
+        value_type: "valueCodeableConcept"
+        terminology_map: "terminology/handedness_conceptmap.yaml"
+
+      - source: "Pegs Dropped"
+        code:
+          system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms"
+          code: "9hpt-pegs-dropped"
+          display: "Pegs Dropped"
+        value_type: "valueQuantity"
+        unit: "{count}"
+        unit_system: "http://unitsofmeasure.org"
+
+      - source: "Trial Duration"
+        code:
+          system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms"
+          code: "trial-duration"
+          display: "Trial Duration"
+        value_type: "valueQuantity"
+        unit: "s"
+        unit_system: "http://unitsofmeasure.org"

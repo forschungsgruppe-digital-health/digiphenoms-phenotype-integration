@@ -1,0 +1,69 @@
+# ConceptMap: Walking Aids → SNOMED CT
+# ======================================
+# Verified against SNOMED CT INT 20260401
+
+concept_map:
+  id: "digiphenoms-walking-aids-map"
+  name: "DigiPhenoMS Walking Aids ConceptMap"
+  source_system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/walking-aids"
+  target_systems:
+    primary: "http://snomed.info/sct"
+
+  mappings:
+    no_aid:
+      display_source: "No walking aid"
+      snomed_code: "none"
+      snomed_display: "No walking aid used"
+      equivalence: "equivalent"
+      note: "Absence coded as data-absent-reason or valueBoolean=false; no dedicated SNOMED concept"
+
+    cane:
+      display_source: "Cane / Walking stick"
+      snomed_code: "360006004"
+      snomed_display: "Walking stick"
+      snomed_fsn: "Walking stick (physical object)"
+      equivalence: "equivalent"
+
+    crutch:
+      display_source: "Crutch"
+      snomed_code: "74566002"
+      snomed_display: "Crutch"
+      snomed_fsn: "Crutch, device (physical object)"
+      equivalence: "equivalent"
+      note: "363753007 (Crutches) is INACTIVE; 74566002 is the active replacement"
+
+    rollator:
+      display_source: "Rollator / Wheeled walker"
+      snomed_code: "1255320005"
+      snomed_display: "Rollator"
+      snomed_fsn: "Wheeled walker (physical object)"
+      equivalence: "equivalent"
+
+    walking_frame:
+      display_source: "Walking frame"
+      snomed_code: "266731002"
+      snomed_display: "Walking frame"
+      snomed_fsn: "Walking frame (physical object)"
+      equivalence: "equivalent"
+
+    wheelchair:
+      display_source: "Wheelchair"
+      snomed_code: "58938008"
+      snomed_display: "Wheelchair"
+      snomed_fsn: "Wheelchair device (physical object)"
+      equivalence: "equivalent"
+
+    afo:
+      display_source: "Ankle-foot orthosis"
+      snomed_code: "183160000"
+      snomed_display: "Rigid ankle-foot orthosis"
+      snomed_fsn: "Rigid ankle-foot orthosis (physical object)"
+      equivalence: "narrower"
+      note: "No general AFO code in SNOMED CT; rigid AFO as default, alternative: 183161001 (flexible)"
+
+    _default:
+      snomed_code: "183135000"
+      snomed_display: "Equipment to aid mobility"
+      snomed_fsn: "Mobility aids (physical object)"
+      equivalence: "wider"
+      note: "Unmapped walking aid - manual review recommended"

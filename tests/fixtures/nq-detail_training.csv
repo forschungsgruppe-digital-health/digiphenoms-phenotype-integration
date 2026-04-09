@@ -1,0 +1,6 @@
+Organization,Assessment UUID,Patient UUID,Assessor UUID,Module UUID,Module Configuration UUID,Key,Subtest Started At,Subtest Ended At,Question Title,User Response,Response Value,T Score,Standard Error,Raw Score,Subtest Index,CAT,Minimum Questions,Maximum Questions,Max Standard Error,consent_status
+Dresden Carus,assess-2001,abc-1001,assessor-01,mod-nq-001,cfg-nq-01,anxiety,2022-03-14T08:30:00Z,2022-03-14T08:35:00Z,I felt fearful,Never,1,42.5,3.2,8,0,True,4,12,0.3,granted
+Dresden Carus,assess-2001,abc-1001,assessor-01,mod-nq-001,cfg-nq-01,anxiety,2022-03-14T08:30:00Z,2022-03-14T08:35:00Z,I felt anxious,Rarely,2,42.5,3.2,8,1,True,4,12,0.3,granted
+Dresden Carus,assess-2001,abc-1001,assessor-01,mod-nq-001,cfg-nq-01,anxiety,2022-03-14T08:30:00Z,2022-03-14T08:35:00Z,I had trouble relaxing,Sometimes,3,42.5,3.2,8,2,True,4,12,0.3,granted
+Dresden Carus,assess-2001,abc-1001,assessor-01,mod-nq-001,cfg-nq-01,fatigue,2022-03-14T08:36:00Z,2022-03-14T08:42:00Z,I felt tired,Often,4,58.1,2.8,15,0,True,4,12,0.3,granted
+Dresden Carus,assess-2001,abc-1001,assessor-01,mod-nq-001,cfg-nq-01,fatigue,2022-03-14T08:36:00Z,2022-03-14T08:42:00Z,I had to limit activities due to fatigue,Sometimes,3,58.1,2.8,15,1,True,4,12,0.3,granted

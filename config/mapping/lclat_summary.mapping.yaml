@@ -1,0 +1,135 @@
+# Mapping: lclat_summary_training → FHIR Observation (LCLA Test)
+# ================================================================
+
+source:
+  file_pattern: "*lclat-summary_training*"
+  id_column: "Assessment UUID"
+  patient_column: "Patient UUID"
+  description: "Low-Contrast Letter Acuity Test summary results"
+
+targets:
+  - resource_type: "Observation"
+    profile: "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-LCLA"
+    id_template: "obs-lcla-{Assessment UUID}-{Module UUID}"
+
+    static_fields:
+      category:
+        - system: "http://terminology.hl7.org/CodeSystem/observation-category"
+          code: "exam"
+          display: "Exam"
+      code:
+        # No standard LOINC for LCLA (79880-1 was incorrectly Snellen Acuity)
+        system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms"
+        code: "lcla-test"
+        display: "Low-Contrast Letter Acuity Test (LCLA)"
+        additional_codings:
+          - system: "http://snomed.info/sct"
+            code: "251686008"
+            display: "Contrast sensitivity"
+            # Semantic tag: observable entity | Verified against SNOMED CT INT 20260401
+
+    status_mapping:
+      source: "Canceled"
+      mapping:
+        "True": "cancelled"
+        "False": "final"
+      default: "final"
+
+    field_mappings:
+      - source: "Patient UUID"
+        target: "subject"
+        type: "reference"
+        reference_type: "Patient"
+        id_template: "pat-{value}"
+
+      - source: "Assessment UUID"
+        target: "encounter"
+        type: "reference"
+        reference_type: "Encounter"
+        id_template: "enc-{value}"
+
+      - source: "Module Started At"
+        target: "effectiveDateTime"
+        type: "datetime"
+        format: "%a, %d %b %Y %H:%M:%S %z"
+
+      - source: "Assessor UUID"
+        target: "performer[0]"
+        type: "reference"
+        reference_type: "Practitioner"
+        id_template: "pract-{value}"
+
+      - source: "Cancel Reason"
+        target: "note[0].text"
+        type: "string"
+        condition: "value is not empty"
+
+      - source: "Version"
+        target: "device"
+        type: "reference"
+        reference_type: "Device"
+        id_template: "device-app-{value}"
+
+    components:
+      - source: "Total Number Correct"
+        code:
+          system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms"
+          code: "lclat-total-correct"
+          display: "LCLA Total Number Correct"
+        value_type: "valueQuantity"
+        unit: "{score}"
+        unit_system: "http://unitsofmeasure.org"
+
+      - source: "Total Number Correct at 100%"
+        code:
+          system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms"
+          code: "lclat-correct-100pct"
+          display: "LCLA Correct at 100% Contrast"
+        value_type: "valueQuantity"
+        unit: "{score}"
+        unit_system: "http://unitsofmeasure.org"
+
+      - source: "Total Number Correct at 2.5%"
+        code:
+          system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms"
+          code: "lclat-correct-2.5pct"
+          display: "LCLA Correct at 2.5% Contrast"
+        value_type: "valueQuantity"
+        unit: "{score}"
+        unit_system: "http://unitsofmeasure.org"
+
+      - source: "Total Number Correct at 10%"
+        code:
+          system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms"
+          code: "lclat-correct-10pct"
+          display: "LCLA Correct at 10% Contrast"
+        value_type: "valueQuantity"
+        unit: "{score}"
+        unit_system: "http://unitsofmeasure.org"
+
+      - source: "Total Number Correct at 5%"
+        code:
+          system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms"
+          code: "lclat-correct-5pct"
+          display: "LCLA Correct at 5% Contrast"
+        value_type: "valueQuantity"
+        unit: "{score}"
+        unit_system: "http://unitsofmeasure.org"
+
+      - source: "Total Number Correct at 1.25%"
+        code:
+          system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms"
+          code: "lclat-correct-1.25pct"
+          display: "LCLA Correct at 1.25% Contrast"
+        value_type: "valueQuantity"
+        unit: "{score}"
+        unit_system: "http://unitsofmeasure.org"
+
+      - source: "Module Duration"
+        code:
+          system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms"
+          code: "module-duration"
+          display: "Module Duration"
+        value_type: "valueQuantity"
+        unit: "s"
+        unit_system: "http://unitsofmeasure.org"

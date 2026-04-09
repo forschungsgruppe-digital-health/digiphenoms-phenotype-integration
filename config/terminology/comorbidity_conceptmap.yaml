@@ -1,0 +1,73 @@
+# ConceptMap: DigiPhenoMS Comorbidity Codes → SNOMED CT / ICD-10
+# ================================================================
+
+concept_map:
+  id: "digiphenoms-comorbidity-map"
+  name: "DigiPhenoMS Comorbidity ConceptMap"
+  source_system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/comorbidities"
+  target_systems:
+    primary: "http://snomed.info/sct"
+    secondary: "http://fhir.de/CodeSystem/bfarm/icd-10-gm"
+
+  mappings:
+    high_blood_pressure:
+      display_source: "Bluthochdruck"
+      snomed_code: "38341003"
+      snomed_display: "Hypertensive disorder"
+      icd10_code: "I10"
+      icd10_display: "Essentielle (primaere) Hypertonie"
+      equivalence: "equivalent"
+
+    anxiety_disorder:
+      display_source: "Angststoerung"
+      snomed_code: "197480006"
+      snomed_display: "Anxiety disorder"
+      icd10_code: "F41.9"
+      icd10_display: "Angststoerung, nicht naeher bezeichnet"
+      equivalence: "equivalent"
+
+    depression:
+      display_source: "Depression"
+      snomed_code: "35489007"
+      snomed_display: "Depressive disorder"
+      icd10_code: "F32.9"
+      icd10_display: "Depressive Episode, nicht naeher bezeichnet"
+      equivalence: "equivalent"
+
+    diabetes:
+      display_source: "Diabetes"
+      snomed_code: "73211009"
+      snomed_display: "Diabetes mellitus"
+      icd10_code: "E14"
+      icd10_display: "Nicht naeher bezeichneter Diabetes mellitus"
+      equivalence: "equivalent"
+
+    migraine:
+      display_source: "Migraene"
+      snomed_code: "37796009"
+      snomed_display: "Migraine"
+      icd10_code: "G43.9"
+      icd10_display: "Migraene, nicht naeher bezeichnet"
+      equivalence: "equivalent"
+
+    thyroid_disorder:
+      display_source: "Schilddruesenerkrankung"
+      snomed_code: "14304000"
+      snomed_display: "Disorder of thyroid gland"
+      icd10_code: "E07.9"
+      icd10_display: "Krankheit der Schilddruese, nicht naeher bezeichnet"
+      equivalence: "equivalent"
+
+    asthma:
+      display_source: "Asthma"
+      snomed_code: "195967001"
+      snomed_display: "Asthma"
+      icd10_code: "J45.9"
+      icd10_display: "Asthma bronchiale, nicht naeher bezeichnet"
+      equivalence: "equivalent"
+
+    _default:
+      snomed_code: "64572001"
+      snomed_display: "Disease"
+      equivalence: "wider"
+      note: "Unmapped comorbidity - manual review recommended"
