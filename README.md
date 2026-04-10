@@ -1,10 +1,14 @@
-# DigiPhenoMS FHIR Mapping
+# DigiPhenoMS FHIR Integration
 
-Konfigurationsgetriebene Mapping-Pipeline zur Transformation klinischer CSV-Daten des **DigiPhenoMS**-Projekts (*Digitale Phänotypisierung für das intelligente Management der Multiplen Sklerose*) in [FHIR R4](https://hl7.org/fhir/R4/) Ressourcen.
+Konfigurationsgetriebene Pipeline zur Transformation klinischer CSV-Daten des **DigiPhenoMS**-Projekts (*Digitale Phänotypisierung für das intelligente Management der Multiplen Sklerose*) in [FHIR R4](https://hl7.org/fhir/R4/) Ressourcen und deren Import in einen HAPI FHIR Server.
 
 ## Projektübersicht
 
-Das DigiPhenoMS-Projekt am Universitätsklinikum Carl Gustav Carus Dresden erfasst klinische Daten von MS-Patienten über verschiedene digitale Assessments. Diese Pipeline überführt die erhobenen CSV-Rohdaten in standardisierte FHIR-Ressourcen, um Interoperabilität und Sekundärnutzung zu ermöglichen.
+Das DigiPhenoMS-Projekt am Universitätsklinikum Carl Gustav Carus Dresden erfasst klinische Daten von MS-Patienten über verschiedene digitale Assessments. Diese Pipeline überführt die erhobenen CSV-Rohdaten in standardisierte FHIR-Ressourcen und stellt mit der `$cohort-submit`-Operation einen strukturierten Import in einen HAPI FHIR Server bereit — für Webanwendungen zur Visualisierung von Kohorten- und individuellen Patientenprofilen.
+
+```
+CSV-Rohdaten → FHIR Mapping → Collection Bundle → $cohort-submit → HAPI FHIR Server → FHIR REST API
+```
 
 ### Erfasste klinische Instrumente
 
@@ -52,6 +56,7 @@ DigiPhenoMS/
 ├── docs/                           # Dokumentation
 │   ├── data_schema_summary.md      # Zusammenfassung aller 9 Datenschemata
 │   ├── fhir_mapping_concept.md     # FHIR-Mapping-Konzept mit Terminologie
+│   ├── cohort_submit_specification.md  # $cohort-submit Import-Spezifikation
 │   └── phenotyping_research.md     # Literaturrecherche digitale Phänotypisierung
 ├── .github/workflows/ci.yml        # GitHub Actions CI
 ├── pyproject.toml                  # Python-Projektdefinition
@@ -101,10 +106,14 @@ for step_name, resources in results.items():
 
 ## Architektur
 
+Die Integration gliedert sich in zwei Phasen: **Mapping** (CSV → FHIR-Ressourcen) und **Import** (FHIR-Ressourcen → HAPI FHIR Server).
+
+### Mapping-Pipeline
+
 Die Pipeline nutzt einen **konfigurationsgetriebenen Ansatz**: Die gesamte Mapping-Logik ist in YAML-Dateien definiert, der Python-Code ist ein generischer Interpreter.
 
 ```
-CSV-Datei → MappingConfig (YAML) → ResourceBuilder → FHIR-Ressource (dict) → Bundle (JSON)
+CSV-Datei → MappingConfig (YAML) → ResourceBuilder → FHIR-Ressource (dict) → Collection Bundle (JSON)
 ```
 
 Kernkomponenten:
@@ -114,6 +123,17 @@ Kernkomponenten:
 - **`FHIRMapper`** — orchestriert das Mapping für einen einzelnen CSV-Typ
 - **`Pipeline`** — führt alle Schritte in Abhängigkeitsreihenfolge aus (topologische Sortierung)
 - **`TerminologyMap`** — übersetzt Quellcodes in SNOMED CT / LOINC / ICD-10 via ConceptMaps
+
+### Kohortenimport ($cohort-submit)
+
+Die benutzerdefinierte FHIR-Operation `$cohort-submit` nimmt das Collection Bundle der Mapping-Pipeline entgegen und importiert es strukturiert in den HAPI FHIR Server. Wesentliche Merkmale:
+
+- **Referenzielle Integrität** — dreistufige Verarbeitung (Patienten → Encounters → Observations/Reports) gemäß Ressourcen-Abhängigkeitsgraph
+- **Group-Hierarchie** — Wurzelgruppe (Kohorte) → Importgruppen (je Importvorgang) → Patientenreferenzen, für vollständige Nachvollziehbarkeit
+- **Zwei Import-Modi** — *Merge* (Conditional PUT, Upsert) und *Distinct* (Conditional POST, nur Anlegen neuer Ressourcen)
+- **Provenance** — automatische Audit-Trail-Dokumentation je Import
+
+Details: [`docs/cohort_submit_specification.md`](docs/cohort_submit_specification.md)
 
 ## Terminologie und Kodierung
 
@@ -139,6 +159,7 @@ pytest --cov=digiphenoms_fhir --cov-report=term-missing
 |----------|--------|
 | [`docs/data_schema_summary.md`](docs/data_schema_summary.md) | Zusammenfassung aller 9 CSV-Datenschemata mit Spalten, Wertebereichen und Missing-Raten |
 | [`docs/fhir_mapping_concept.md`](docs/fhir_mapping_concept.md) | FHIR-Mapping-Konzept, Ressourcen-Zuordnung, Terminologie-Status |
+| [`docs/cohort_submit_specification.md`](docs/cohort_submit_specification.md) | `$cohort-submit` Schnittstellenspezifikation — OperationDefinition, Import-Modi, Anwendungsfälle, Sequenz- und Klassendiagramme |
 | [`docs/phenotyping_research.md`](docs/phenotyping_research.md) | Literaturrecherche zu digitaler Phänotypisierung bei MS |
 
 ## Lizenz
