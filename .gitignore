@@ -1,5 +1,6 @@
 # Python
 __pycache__/
+.pytest_cache/
 *.py[cod]
 *.egg-info/
 dist/
@@ -31,3 +32,12 @@ output/
 .coverage
 .coverage.*
 htmlcov/
+
+# Java / Maven
+server/target/
+*.class
+*.jar
+!server/pom.xml
+
+# Docker
+docker/.env
