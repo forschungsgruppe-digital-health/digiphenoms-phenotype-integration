@@ -28,80 +28,131 @@ CSV-Rohdaten → FHIR Mapping → Collection Bundle → $cohort-submit → HAPI 
 
 ```
 DigiPhenoMS/
-├── config/                         # YAML-Konfigurationen
-│   ├── pipeline.yaml               # Pipeline-Schritte und Ausführungsreihenfolge
-│   ├── mapping/                    # Mapping-Regeln (je ein YAML pro CSV-Typ)
-│   │   ├── patient_profile.mapping.yaml
-│   │   ├── wrapper_overview.mapping.yaml
-│   │   ├── lclat_summary.mapping.yaml
-│   │   ├── mdt_summary.mapping.yaml
-│   │   ├── npst_summary.mapping.yaml
-│   │   ├── wst_summary.mapping.yaml
-│   │   ├── nq_detail.mapping.yaml
-│   │   ├── mh_detail.mapping.yaml
-│   │   └── mrt.mapping.yaml
-│   └── terminology/                # Terminologie-Mappings (ConceptMaps)
-│       ├── comorbidity_conceptmap.yaml
-│       ├── handedness_conceptmap.yaml
-│       ├── walking_aids_conceptmap.yaml
-│       └── neuroqol_domains_conceptmap.yaml
-├── src/digiphenoms_fhir/           # Python-Paket
-│   ├── __init__.py
-│   ├── mapper.py                   # Mapping-Engine (ResourceBuilder, Pipeline)
-│   └── __main__.py                 # CLI-Einstiegspunkt
-├── tests/                          # Pytest-Testsuite
-│   ├── fixtures/                   # Synthetische Testdaten (CSV)
-│   ├── test_resource_builder.py    # Unit-Tests für Ressourcen-Erzeugung
-│   └── test_pipeline.py            # Integrationstests
-├── docs/                           # Dokumentation
-│   ├── data_schema_summary.md      # Zusammenfassung aller 9 Datenschemata
-│   ├── fhir_mapping_concept.md     # FHIR-Mapping-Konzept mit Terminologie
-│   ├── cohort_submit_specification.md  # $cohort-submit Import-Spezifikation
-│   └── phenotyping_research.md     # Literaturrecherche digitale Phänotypisierung
-├── .github/workflows/ci.yml        # GitHub Actions CI
-├── pyproject.toml                  # Python-Projektdefinition
+├── pipeline/                           # Python-Mapping-Pipeline
+│   ├── config/                         # YAML-Konfigurationen
+│   │   ├── pipeline.yaml               # Pipeline-Schritte und Ausführungsreihenfolge
+│   │   ├── mapping/                    # Mapping-Regeln (je ein YAML pro CSV-Typ)
+│   │   └── terminology/                # Terminologie-Mappings (ConceptMaps)
+│   ├── src/digiphenoms_fhir/           # Python-Paket
+│   │   ├── __init__.py
+│   │   ├── mapper.py                   # Mapping-Engine (ResourceBuilder, Pipeline)
+│   │   └── __main__.py                 # CLI-Einstiegspunkt
+│   ├── tests/                          # Pytest-Testsuite
+│   │   ├── fixtures/                   # Synthetische Testdaten (CSV)
+│   │   ├── test_resource_builder.py    # Unit-Tests für Ressourcen-Erzeugung
+│   │   └── test_pipeline.py            # Integrationstests
+│   └── pyproject.toml                  # Python-Projektdefinition
+├── server/                             # $cohort-submit Spring Extension (JAR)
+│   ├── src/main/java/de/tud/fgdh/digiphenoms/fhir/
+│   │   ├── operations/
+│   │   │   └── CohortSubmitOperation.java  # $cohort-submit Provider
+│   │   ├── service/
+│   │   │   ├── CohortSubmitService.java    # 9-Stufen-Verarbeitungslogik
+│   │   │   └── ImportStatistics.java       # Zähler für Import-Statistik
+│   │   └── config/
+│   │       └── FhirClientConfig.java       # FHIR-Client-Konfiguration
+│   └── pom.xml                             # Maven-Projektdefinition (Thin JAR)
+├── docker/                             # Container-Deployment
+│   ├── docker-compose.yml              # HAPI + PostgreSQL + Pipeline
+│   ├── hapi/
+│   │   ├── Dockerfile                  # Multi-Stage Build (Maven → HAPI Image)
+│   │   └── application.yaml            # HAPI FHIR Server-Konfiguration
+│   ├── pipeline/Dockerfile             # Python-Pipeline-Container
+│   └── .env.example                    # Umgebungsvariablen-Vorlage
+├── docs/                               # Dokumentation
+│   ├── data_schema_summary.md
+│   ├── fhir_mapping_concept.md
+│   ├── cohort_submit_specification.md
+│   └── phenotyping_research.md
+├── .github/workflows/ci.yml           # GitHub Actions CI
 └── LICENSE
 ```
 
 ## Installation
 
+### Pipeline (Python)
+
 ```bash
-# Basis-Installation
+cd pipeline
+
+# Virtuelle Umgebung anlegen und aktivieren
+python -m venv .venv
+source .venv/bin/activate    # Linux/macOS
+
+# Basis-Installation (Mapping)
 pip install -e .
 
-# Mit Entwicklungsabhängigkeiten (pytest)
-pip install -e ".[dev]"
+# Mit Kohortenimport ($cohort-submit Client)
+pip install -e ".[submit]"
 
-# Mit FHIR-Validierung (fhir.resources)
-pip install -e ".[validation]"
+# Mit Entwicklungsabhängigkeiten (pytest, httpx)
+pip install -e ".[dev]"
+```
+
+### Server (Java Extension JAR)
+
+```bash
+cd server
+mvn package
+```
+
+Das erzeugte JAR wird beim Docker-Build automatisch in das HAPI FHIR Image kopiert (`/app/extra-classes/`) und beim Start über den `PropertiesLauncher` geladen.
+
+### Docker (empfohlen)
+
+```bash
+cd docker
+cp .env.example .env    # Konfiguration anpassen
+
+# Server + Datenbank starten
+docker compose up -d fhir-server
+
+# Pipeline ausführen (CSV-Daten in DATA_DIR bereitstellen)
+docker compose run pipeline
 ```
 
 ## Verwendung
 
-### Als CLI-Tool
+### Pipeline als CLI-Tool
 
 ```bash
+cd pipeline
+
 # Vollständige Pipeline ausführen
 digiphenoms-fhir --config config/ --data data/ --output output/
-
-# Oder als Python-Modul
-python -m digiphenoms_fhir --config config/ --data data/ --output output/
 
 # Nur bestimmte Schritte ausführen
 digiphenoms-fhir --config config/ --data data/ --output output/ --steps patient_profile lclat_summary
 ```
 
-### Als Python-Bibliothek
+### Pipeline als Python-Bibliothek
 
 ```python
 from digiphenoms_fhir import Pipeline
 
-pipeline = Pipeline(config_dir="config/")
+pipeline = Pipeline(config_dir="pipeline/config/")
 results = pipeline.run(data_dir="data/", output_dir="output/")
 
-# results: dict[str, list[dict]] — Schritt-Name → FHIR-Ressourcen
 for step_name, resources in results.items():
     print(f"{step_name}: {len(resources)} Ressourcen")
+```
+
+### Docker-basierter Import
+
+```bash
+cd docker
+
+# FHIR Server starten
+docker compose up -d fhir-server
+
+# Warten bis Server bereit ist
+docker compose logs -f fhir-server  # bis "Started Application"
+
+# Pipeline mit Kohortenimport ausführen
+DATA_DIR=/pfad/zu/csv-daten docker compose run pipeline
+
+# Server-Status prüfen
+curl http://localhost:8080/fhir/metadata
 ```
 
 ## Architektur
@@ -124,9 +175,9 @@ Kernkomponenten:
 - **`Pipeline`** — führt alle Schritte in Abhängigkeitsreihenfolge aus (topologische Sortierung)
 - **`TerminologyMap`** — übersetzt Quellcodes in SNOMED CT / LOINC / ICD-10 via ConceptMaps
 
-### Kohortenimport ($cohort-submit)
+### HAPI FHIR Server + $cohort-submit
 
-Die benutzerdefinierte FHIR-Operation `$cohort-submit` nimmt das Collection Bundle der Mapping-Pipeline entgegen und importiert es strukturiert in den HAPI FHIR Server. Wesentliche Merkmale:
+Die benutzerdefinierte Operation `$cohort-submit` wird als Thin-JAR-Extension gebaut und beim Start des offiziellen `hapiproject/hapi:v7.6.0`-Images über `loader.path=/app/extra-classes/` geladen. Wesentliche Merkmale:
 
 - **Referenzielle Integrität** — dreistufige Verarbeitung (Patienten → Encounters → Observations/Reports) gemäß Ressourcen-Abhängigkeitsgraph
 - **Group-Hierarchie** — Wurzelgruppe (Kohorte) → Importgruppen (je Importvorgang) → Patientenreferenzen, für vollständige Nachvollziehbarkeit
@@ -149,8 +200,14 @@ Details zur Terminologie: [`docs/fhir_mapping_concept.md`](docs/fhir_mapping_con
 ## Tests ausführen
 
 ```bash
+# Pipeline-Tests
+cd pipeline
 pytest -v
 pytest --cov=digiphenoms_fhir --cov-report=term-missing
+
+# Server-Build + Tests
+cd server
+mvn verify
 ```
 
 ## Dokumentation

@@ -1,0 +1,68 @@
+services:
+  # ---------- PostgreSQL for HAPI FHIR ----------
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:-hapi}
+      POSTGRES_USER: ${DB_USER:-hapi}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-hapi}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-hapi}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ---------- HAPI FHIR Server + $cohort-submit Extension ----------
+  fhir-server:
+    build:
+      context: ..
+      dockerfile: docker/hapi/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_CONFIG_ADDITIONAL-LOCATION: file:///app/config/
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME:-hapi}
+      DB_USER: ${DB_USER:-hapi}
+      DB_PASSWORD: ${DB_PASSWORD:-hapi}
+      SERVER_PORT: 8080
+    volumes:
+      - ./hapi/application.yaml:/app/config/application.yaml:ro
+    ports:
+      - "${FHIR_PORT:-8080}:8080"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8080/fhir/metadata || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+
+  # ---------- Pipeline (one-shot CSV-to-FHIR import runner) ----------
+  pipeline:
+    build:
+      context: ..
+      dockerfile: docker/pipeline/Dockerfile
+    depends_on:
+      fhir-server:
+        condition: service_healthy
+    environment:
+      FHIR_BASE_URL: http://fhir-server:8080/fhir
+    volumes:
+      - ${DATA_DIR:-./data}:/data:ro
+    command: >
+      digiphenoms-fhir
+        --config /app/config
+        --data-dir /data
+        --submit
+        --endpoint http://fhir-server:8080/fhir
+
+volumes:
+  pgdata:
