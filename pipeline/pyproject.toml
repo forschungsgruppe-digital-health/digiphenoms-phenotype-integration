@@ -6,11 +6,10 @@ build-backend = "hatchling.build"
 name = "digiphenoms-fhir"
 version = "1.0.0"
 description = "Configuration-driven CSV-to-FHIR R4 integration pipeline for the DigiPhenoMS project"
-readme = "../README.md"
 license = "MIT"
 requires-python = ">=3.10"
 authors = [
-    { name = "DigiPhenoMS Team", email = "digiphenoms@tu-dresden.de" },
+    { name = "DigiPhenoMS Team", email = "digital-health@tu-dresden.de" },
 ]
 keywords = ["fhir", "hl7", "multiple-sclerosis", "digital-phenotyping", "clinical-data"]
 classifiers = [
