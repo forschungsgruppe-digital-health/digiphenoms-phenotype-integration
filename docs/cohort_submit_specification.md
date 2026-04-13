@@ -1023,12 +1023,12 @@ Der Python-Client (`CohortSubmitClient`) wirft `CohortSubmitError` mit den Attri
 
 ### 12.1 HAPI FHIR Server (Java)
 
-Die Operation wird als Spring `@Component` mit `@Operation`-Annotation implementiert und über `hapi.fhir.custom-bean-packages` in der `application.yaml` registriert:
+Die Operation wird als Spring `@Component` mit `@Operation`-Annotation implementiert und über `hapi.fhir.custom_bean_packages` in der `application.yaml` registriert:
 
 ```yaml
 hapi:
   fhir:
-    custom-bean-packages: de.tu_dresden.digiphenoms.fhir.operations
+    custom_bean_packages: de.tud.fgdh.digiphenoms.fhir
 ```
 
 ```java
