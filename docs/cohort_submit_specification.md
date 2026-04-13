@@ -162,18 +162,22 @@ Die Wurzelgruppe repräsentiert die gesamte DigiPhenoMS-Kohorte. Sie existiert g
 {
   "resourceType": "Group",
   "id": "digiphenoms-cohort",
-  "identifier": [{
-    "system": "https://digiphenoms.tu-dresden.de/fhir/cohort",
-    "value": "digiphenoms-ms-cohort"
-  }],
+  "identifier": [
+    {
+      "system": "https://digiphenoms.tu-dresden.de/fhir/cohort",
+      "value": "digiphenoms-ms-cohort"
+    }
+  ],
   "type": "person",
   "actual": true,
   "code": {
-    "coding": [{
-      "system": "http://snomed.info/sct",
-      "code": "24700007",
-      "display": "Multiple sclerosis"
-    }]
+    "coding": [
+      {
+        "system": "http://snomed.info/sct",
+        "code": "24700007",
+        "display": "Multiple sclerosis"
+      }
+    ]
   },
   "name": "DigiPhenoMS MS-Kohorte",
   "managingEntity": {
@@ -197,35 +201,43 @@ Jeder Aufruf von `$cohort-submit` erzeugt eine Importgruppe. Sie dokumentiert, w
 {
   "resourceType": "Group",
   "id": "import-2026-04-10-001",
-  "identifier": [{
-    "system": "https://digiphenoms.tu-dresden.de/fhir/import-batch",
-    "value": "import-2026-04-10-001"
-  }],
+  "identifier": [
+    {
+      "system": "https://digiphenoms.tu-dresden.de/fhir/import-batch",
+      "value": "import-2026-04-10-001"
+    }
+  ],
   "type": "person",
   "actual": true,
   "name": "Import 2026-04-10 #001",
   "characteristic": [
     {
       "code": {
-        "coding": [{
-          "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/import-metadata",
-          "code": "import-mode"
-        }]
+        "coding": [
+          {
+            "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/import-metadata",
+            "code": "import-mode"
+          }
+        ]
       },
       "valueCodeableConcept": {
-        "coding": [{
-          "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/import-mode",
-          "code": "merge"
-        }]
+        "coding": [
+          {
+            "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/import-mode",
+            "code": "merge"
+          }
+        ]
       },
       "exclude": false
     },
     {
       "code": {
-        "coding": [{
-          "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/import-metadata",
-          "code": "pipeline-version"
-        }]
+        "coding": [
+          {
+            "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/import-metadata",
+            "code": "pipeline-version"
+          }
+        ]
       },
       "valueCodeableConcept": { "text": "1.0.0" },
       "exclude": false
@@ -267,14 +279,14 @@ Group/digiphenoms-cohort                       Wurzelgruppe (stabil, 1x)
 
 Merge ist der Standardmodus für fortlaufende Aktualisierungen. Er fügt neue Ressourcen hinzu und aktualisiert bestehende per Conditional PUT.
 
-| Ressource | Bei Erstimport | Bei Folgeimport |
-|---|---|---|
-| Patient | Conditional Create | Update (Demografie-Änderungen) |
-| Condition | Conditional Create | Update (Statusänderungen) |
-| Encounter | Conditional Create | Kein Update (bereits final) |
-| Device | Conditional Create | Kein Update (statisch) |
-| Observation | Conditional Create | Update (Wertkorrektur möglich) |
-| DiagnosticReport | Conditional Create | Update (Befundergänzung) |
+| Ressource             | Bei Erstimport     | Bei Folgeimport                 |
+| --------------------- | ------------------ | ------------------------------- |
+| Patient               | Conditional Create | Update (Demografie-Änderungen)  |
+| Condition             | Conditional Create | Update (Statusänderungen)       |
+| Encounter             | Conditional Create | Kein Update (bereits final)     |
+| Device                | Conditional Create | Kein Update (statisch)          |
+| Observation           | Conditional Create | Update (Wertkorrektur möglich)  |
+| DiagnosticReport      | Conditional Create | Update (Befundergänzung)        |
 | QuestionnaireResponse | Conditional Create | Kein Update (bereits completed) |
 
 Bundle-Entry im Merge-Modus:
@@ -302,20 +314,20 @@ Distinct importiert neue Ressourcen, ohne bestehende zu verändern. Technisch ü
 }
 ```
 
-| Situation | Merge | Distinct |
-|---|---|---|
+| Situation                          | Merge        | Distinct    |
+| ---------------------------------- | ------------ | ----------- |
 | Ressource existiert, Wert geändert | Überschreibt | Überspringt |
-| Neue Ressource | Anlegen | Anlegen |
+| Neue Ressource                     | Anlegen      | Anlegen     |
 
 ### 4.3 Wahl des Modus
 
-| Szenario | Empfohlener Modus |
-|---|---|
-| Erstmalige Beladung des Servers | Merge oder Distinct (identisch) |
-| Regelmäßiger Datenabzug mit aktualisierten Werten | Merge |
-| Import eines Forschungsdatensatzes als Snapshot | Distinct |
-| Re-Import nach Pipeline-Korrektur | Merge |
-| Paralleler Import verschiedener Datenstände | Distinct |
+| Szenario                                          | Empfohlener Modus               |
+| ------------------------------------------------- | ------------------------------- |
+| Erstmalige Beladung des Servers                   | Merge oder Distinct (identisch) |
+| Regelmäßiger Datenabzug mit aktualisierten Werten | Merge                           |
+| Import eines Forschungsdatensatzes als Snapshot   | Distinct                        |
+| Re-Import nach Pipeline-Korrektur                 | Merge                           |
+| Paralleler Import verschiedener Datenstände       | Distinct                        |
 
 ---
 
@@ -403,11 +415,46 @@ Distinct importiert neue Ressourcen, ohne bestehende zu verändern. Technisch ü
       "documentation": "Import statistics.",
       "type": "string",
       "part": [
-        { "name": "resourcesCreated", "use": "out", "min": 1, "max": "1", "type": "integer", "documentation": "Resources newly created." },
-        { "name": "resourcesUpdated", "use": "out", "min": 1, "max": "1", "type": "integer", "documentation": "Resources updated (merge only; 0 in distinct)." },
-        { "name": "resourcesSkipped", "use": "out", "min": 1, "max": "1", "type": "integer", "documentation": "Resources skipped (distinct only; 0 in merge)." },
-        { "name": "patientsInBatch", "use": "out", "min": 1, "max": "1", "type": "integer", "documentation": "Distinct patients in this batch." },
-        { "name": "patientsInCohort", "use": "out", "min": 1, "max": "1", "type": "integer", "documentation": "Total patients in cohort after import." }
+        {
+          "name": "resourcesCreated",
+          "use": "out",
+          "min": 1,
+          "max": "1",
+          "type": "integer",
+          "documentation": "Resources newly created."
+        },
+        {
+          "name": "resourcesUpdated",
+          "use": "out",
+          "min": 1,
+          "max": "1",
+          "type": "integer",
+          "documentation": "Resources updated (merge only; 0 in distinct)."
+        },
+        {
+          "name": "resourcesSkipped",
+          "use": "out",
+          "min": 1,
+          "max": "1",
+          "type": "integer",
+          "documentation": "Resources skipped (distinct only; 0 in merge)."
+        },
+        {
+          "name": "patientsInBatch",
+          "use": "out",
+          "min": 1,
+          "max": "1",
+          "type": "integer",
+          "documentation": "Distinct patients in this batch."
+        },
+        {
+          "name": "patientsInCohort",
+          "use": "out",
+          "min": 1,
+          "max": "1",
+          "type": "integer",
+          "documentation": "Total patients in cohort after import."
+        }
       ]
     }
   ]
@@ -425,13 +472,15 @@ Distinct importiert neue Ressourcen, ohne bestehende zu verändern. Technisch ü
   "title": "DigiPhenoMS Import Mode",
   "status": "draft",
   "compose": {
-    "include": [{
-      "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/import-mode",
-      "concept": [
-        { "code": "merge", "display": "Merge (Create or Update)" },
-        { "code": "distinct", "display": "Distinct (Create only)" }
-      ]
-    }]
+    "include": [
+      {
+        "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/import-mode",
+        "concept": [
+          { "code": "merge", "display": "Merge (Create or Update)" },
+          { "code": "distinct", "display": "Distinct (Create only)" }
+        ]
+      }
+    ]
   }
 }
 ```
@@ -492,7 +541,13 @@ Content-Type: application/fhir+json
       "name": "outcome",
       "resource": {
         "resourceType": "OperationOutcome",
-        "issue": [{ "severity": "information", "code": "informational", "diagnostics": "Import completed successfully. Mode: merge." }]
+        "issue": [
+          {
+            "severity": "information",
+            "code": "informational",
+            "diagnostics": "Import completed successfully. Mode: merge."
+          }
+        ]
       }
     },
     {
@@ -524,6 +579,7 @@ Content-Type: application/fhir+json
 **Vorbedingung:** Der HAPI FHIR Server ist leer. Die Mapping-Pipeline hat die CSV-Rohdaten aller 9 Datenquellen in ein FHIR Collection Bundle transformiert.
 
 **Ablauf:**
+
 1. Der Akteur ruft `$cohort-submit` mit dem Collection Bundle auf (mode=merge).
 2. Die Wurzelgruppe existiert nicht und wird angelegt.
 3. Patient- und Condition-Ressourcen werden per Conditional PUT erstellt.
@@ -590,6 +646,7 @@ sequenceDiagram
 **Vorbedingung:** Server enthält Daten aus dem Erstimport.
 
 **Ablauf:**
+
 1. `$cohort-submit` mit mode=merge und inkrementellem Bundle.
 2. Wurzelgruppe existiert — wird gelesen.
 3. 12 bekannte Patienten: Conditional PUT findet bestehende Ressourcen, aktualisiert bei Bedarf.
@@ -650,6 +707,7 @@ sequenceDiagram
 **Vorbedingung:** Server enthält eigene Daten. Externer Datensatz enthält teils dieselben Patienten mit abweichenden Werten.
 
 **Ablauf:**
+
 1. `$cohort-submit` mit mode=distinct.
 2. Bekannte Patienten/Observations: POST mit ifNoneExist erkennt Existenz, überspringt.
 3. Neue Patienten und Observations: werden angelegt.
@@ -712,6 +770,7 @@ sequenceDiagram
 **Vorbedingung:** Server enthält Daten mit fehlerhaften Werten.
 
 **Ablauf:**
+
 1. Korrigierte Pipeline über alle CSV-Daten ausführen.
 2. `$cohort-submit` mit mode=merge und vollständigem Bundle.
 3. Alle Ressourcen per Conditional PUT aktualisiert — korrigierte Werte überschreiben fehlerhafte.
@@ -837,26 +896,34 @@ Jeder Import erzeugt eine Provenance-Ressource:
   "target": [{ "reference": "Group/import-2026-04-10-001" }],
   "recorded": "2026-04-10T14:30:00+02:00",
   "activity": {
-    "coding": [{
-      "system": "http://terminology.hl7.org/CodeSystem/v3-DataOperation",
-      "code": "CREATE",
-      "display": "create"
-    }]
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/v3-DataOperation",
+        "code": "CREATE",
+        "display": "create"
+      }
+    ]
   },
-  "agent": [{
-    "type": {
-      "coding": [{
-        "system": "http://terminology.hl7.org/CodeSystem/provenance-participant-type",
-        "code": "assembler",
-        "display": "Assembler"
-      }]
-    },
-    "who": { "display": "DigiPhenoMS FHIR Mapper v1.0.0" }
-  }],
-  "entity": [{
-    "role": "source",
-    "what": { "display": "CSV-Export DigiPhenoMS MSPT-System, April 2026" }
-  }]
+  "agent": [
+    {
+      "type": {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/provenance-participant-type",
+            "code": "assembler",
+            "display": "Assembler"
+          }
+        ]
+      },
+      "who": { "display": "DigiPhenoMS FHIR Mapper v1.0.0" }
+    }
+  ],
+  "entity": [
+    {
+      "role": "source",
+      "what": { "display": "CSV-Export DigiPhenoMS MSPT-System, April 2026" }
+    }
+  ]
 }
 ```
 
@@ -887,15 +954,15 @@ GET /Provenance?target=Group/import-2026-04-10-001
 
 Die Conditional-URLs verwenden die Identifier-Systeme aus `pipeline.yaml`:
 
-| Ressource | Identifier-System (OID) | Conditional-Schlüssel |
-|---|---|---|
-| Patient | `urn:oid:2.16.840.1.113883.3.digiphenoms.patient` | Patient UUID |
-| Encounter | `urn:oid:2.16.840.1.113883.3.digiphenoms.assessment` | Assessment UUID |
-| Device | `urn:oid:2.16.840.1.113883.3.digiphenoms.module` | Vendor Identifier |
-| Observation | `urn:oid:2.16.840.1.113883.3.digiphenoms.module` | Assessment UUID + Module UUID |
-| Condition | `urn:oid:2.16.840.1.113883.3.digiphenoms.patient` | Patient UUID + Condition Type |
-| DiagnosticReport | `urn:oid:2.16.840.1.113883.3.digiphenoms.patient` | Patient UUID + Datum |
-| QuestionnaireResponse | `urn:oid:2.16.840.1.113883.3.digiphenoms.module` | Assessment UUID + Module UUID |
+| Ressource             | Identifier-System (OID)                              | Conditional-Schlüssel         |
+| --------------------- | ---------------------------------------------------- | ----------------------------- |
+| Patient               | `urn:oid:2.16.840.1.113883.3.digiphenoms.patient`    | Patient UUID                  |
+| Encounter             | `urn:oid:2.16.840.1.113883.3.digiphenoms.assessment` | Assessment UUID               |
+| Device                | `urn:oid:2.16.840.1.113883.3.digiphenoms.module`     | Vendor Identifier             |
+| Observation           | `urn:oid:2.16.840.1.113883.3.digiphenoms.module`     | Assessment UUID + Module UUID |
+| Condition             | `urn:oid:2.16.840.1.113883.3.digiphenoms.patient`    | Patient UUID + Condition Type |
+| DiagnosticReport      | `urn:oid:2.16.840.1.113883.3.digiphenoms.patient`    | Patient UUID + Datum          |
+| QuestionnaireResponse | `urn:oid:2.16.840.1.113883.3.digiphenoms.module`     | Assessment UUID + Module UUID |
 
 **Voraussetzung:** Die Mapper-Pipeline muss für jede Ressource ein `identifier`-Element mit dem projektspezifischen System erzeugen. Aktuell werden IDs nur im `id`-Feld gesetzt — die `identifier`-Liste muss ergänzt werden.
 
@@ -905,15 +972,15 @@ Die Conditional-URLs verwenden die Identifier-Systeme aus `pipeline.yaml`:
 
 ### 11.1 HTTP-Statuscodes
 
-| Code | Bedeutung | Beschreibung |
-|---|---|---|
-| 200 OK | Erfolg | Alle Ressourcen verarbeitet. Response enthält Parameters mit Ergebnis. |
-| 400 Bad Request | Ungültige Eingabe | Bundle fehlt, ist leer, enthält keinen Patient oder ungültiger Mode. |
-| 401 Unauthorized | Authentifizierung | Fehlende oder ungültige Credentials. |
-| 403 Forbidden | Berechtigung | Unzureichende Berechtigungen für die Operation. |
-| 422 Unprocessable Entity | Validierungsfehler | Bundle enthält invalide FHIR-Ressourcen oder Identifier-Systeme fehlen. |
-| 500 Internal Server Error | Serverfehler | Unerwarteter Fehler bei der Verarbeitung. |
-| 504 Gateway Timeout | Timeout | Verarbeitung hat das Server-Timeout überschritten. |
+| Code                      | Bedeutung          | Beschreibung                                                            |
+| ------------------------- | ------------------ | ----------------------------------------------------------------------- |
+| 200 OK                    | Erfolg             | Alle Ressourcen verarbeitet. Response enthält Parameters mit Ergebnis.  |
+| 400 Bad Request           | Ungültige Eingabe  | Bundle fehlt, ist leer, enthält keinen Patient oder ungültiger Mode.    |
+| 401 Unauthorized          | Authentifizierung  | Fehlende oder ungültige Credentials.                                    |
+| 403 Forbidden             | Berechtigung       | Unzureichende Berechtigungen für die Operation.                         |
+| 422 Unprocessable Entity  | Validierungsfehler | Bundle enthält invalide FHIR-Ressourcen oder Identifier-Systeme fehlen. |
+| 500 Internal Server Error | Serverfehler       | Unerwarteter Fehler bei der Verarbeitung.                               |
+| 504 Gateway Timeout       | Timeout            | Verarbeitung hat das Server-Timeout überschritten.                      |
 
 ### 11.2 OperationOutcome
 
@@ -937,14 +1004,14 @@ Bei Fehlern (HTTP ≥ 400) liefert der Server ein OperationOutcome mit maschinen
 
 ### 11.3 Fehlercodes
 
-| Code | Bedeutung | HTTP |
-|---|---|---|
-| DIGIPHENOMS-001 | Bundle fehlt oder ist leer | 400 |
-| DIGIPHENOMS-002 | Kein Patient im Bundle enthalten | 400 |
-| DIGIPHENOMS-003 | Ungültiger Import-Modus (weder merge noch distinct) | 400 |
-| DIGIPHENOMS-004 | Transaction Bundle fehlgeschlagen (Stufe N) | 422 |
-| DIGIPHENOMS-005 | Wurzelgruppe konnte nicht angelegt/gefunden werden | 500 |
-| DIGIPHENOMS-006 | Importgruppe konnte nicht angelegt werden | 500 |
+| Code            | Bedeutung                                           | HTTP |
+| --------------- | --------------------------------------------------- | ---- |
+| DIGIPHENOMS-001 | Bundle fehlt oder ist leer                          | 400  |
+| DIGIPHENOMS-002 | Kein Patient im Bundle enthalten                    | 400  |
+| DIGIPHENOMS-003 | Ungültiger Import-Modus (weder merge noch distinct) | 400  |
+| DIGIPHENOMS-004 | Transaction Bundle fehlgeschlagen (Stufe N)         | 422  |
+| DIGIPHENOMS-005 | Wurzelgruppe konnte nicht angelegt/gefunden werden  | 500  |
+| DIGIPHENOMS-006 | Importgruppe konnte nicht angelegt werden           | 500  |
 
 ### 11.4 Client-seitige Fehlerbehandlung
 
@@ -956,12 +1023,12 @@ Der Python-Client (`CohortSubmitClient`) wirft `CohortSubmitError` mit den Attri
 
 ### 12.1 HAPI FHIR Server (Java)
 
-Die Operation wird als Spring `@Component` mit `@Operation`-Annotation implementiert und über `hapi.fhir.custom_bean_packages` in der `application.yaml` registriert:
+Die Operation wird als Spring `@Component` mit `@Operation`-Annotation implementiert und über `hapi.fhir.custom-bean-packages` in der `application.yaml` registriert:
 
 ```yaml
 hapi:
   fhir:
-    custom_bean_packages: de.tud.fgdh.digiphenoms.fhir
+    custom-bean-packages: de.tu_dresden.digiphenoms.fhir.operations
 ```
 
 ```java
@@ -985,12 +1052,12 @@ Der Kohortenimport wird als abschließender Pipeline-Schritt über die Sektion `
 
 ```yaml
 cohort_submit:
-  enabled: false                                # true zum Aktivieren
-  endpoint: "http://localhost:8080/fhir"        # HAPI FHIR Base-URL
-  mode: "merge"                                 # merge | distinct
-  cohort_id: "digiphenoms-ms-cohort"            # Wurzelgruppe Identifier
-  timeout: 300                                  # Sekunden
-  batch_label_prefix: "DigiPhenoMS Pipeline"    # Prefix für Batch-Label
+  enabled: false # true zum Aktivieren
+  endpoint: "http://localhost:8080/fhir" # HAPI FHIR Base-URL
+  mode: "merge" # merge | distinct
+  cohort_id: "digiphenoms-ms-cohort" # Wurzelgruppe Identifier
+  timeout: 300 # Sekunden
+  batch_label_prefix: "DigiPhenoMS Pipeline" # Prefix für Batch-Label
   verify_ssl: true
 ```
 
@@ -1000,15 +1067,15 @@ Die Übermittlung findet nur statt, wenn `enabled: true` gesetzt ist und die Tra
 
 Jede Ressource erhält ein `identifier`-Element mit dem projektspezifischen OID-System (aus `namespaces` in `pipeline.yaml`). Die Zuordnung Ressourcentyp → Identifier-System ist fest definiert:
 
-| Ressource | Namespace-Schlüssel | OID |
-|---|---|---|
-| Patient | `patient_system` | `urn:oid:2.16.840.1.113883.3.digiphenoms.patient` |
-| Condition | `patient_system` | `urn:oid:2.16.840.1.113883.3.digiphenoms.patient` |
-| Encounter | `assessment_system` | `urn:oid:2.16.840.1.113883.3.digiphenoms.assessment` |
-| Device | `module_system` | `urn:oid:2.16.840.1.113883.3.digiphenoms.module` |
-| Observation | `module_system` | `urn:oid:2.16.840.1.113883.3.digiphenoms.module` |
-| DiagnosticReport | `patient_system` | `urn:oid:2.16.840.1.113883.3.digiphenoms.patient` |
-| QuestionnaireResponse | `module_system` | `urn:oid:2.16.840.1.113883.3.digiphenoms.module` |
+| Ressource             | Namespace-Schlüssel | OID                                                  |
+| --------------------- | ------------------- | ---------------------------------------------------- |
+| Patient               | `patient_system`    | `urn:oid:2.16.840.1.113883.3.digiphenoms.patient`    |
+| Condition             | `patient_system`    | `urn:oid:2.16.840.1.113883.3.digiphenoms.patient`    |
+| Encounter             | `assessment_system` | `urn:oid:2.16.840.1.113883.3.digiphenoms.assessment` |
+| Device                | `module_system`     | `urn:oid:2.16.840.1.113883.3.digiphenoms.module`     |
+| Observation           | `module_system`     | `urn:oid:2.16.840.1.113883.3.digiphenoms.module`     |
+| DiagnosticReport      | `patient_system`    | `urn:oid:2.16.840.1.113883.3.digiphenoms.patient`    |
+| QuestionnaireResponse | `module_system`     | `urn:oid:2.16.840.1.113883.3.digiphenoms.module`     |
 
 ### 12.4 Client-Aufruf (Python)
 

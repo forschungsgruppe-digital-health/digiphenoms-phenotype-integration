@@ -1,6 +1,6 @@
 # DigiPhenoMS FHIR Integration
 
-Konfigurationsgetriebene Pipeline zur Transformation klinischer CSV-Daten des **DigiPhenoMS**-Projekts (*Digitale Phänotypisierung für das intelligente Management der Multiplen Sklerose*) in [FHIR R4](https://hl7.org/fhir/R4/) Ressourcen und deren Import in einen HAPI FHIR Server.
+Konfigurationsgetriebene Pipeline zur Transformation klinischer CSV-Daten des **DigiPhenoMS**-Projekts (_Digitale Phänotypisierung für das intelligente Management der Multiplen Sklerose_) in [FHIR R4](https://hl7.org/fhir/R4/) Ressourcen und deren Import in einen HAPI FHIR Server.
 
 ## Projektübersicht
 
@@ -12,17 +12,17 @@ CSV-Rohdaten → FHIR Mapping → Collection Bundle → $cohort-submit → HAPI 
 
 ### Erfasste klinische Instrumente
 
-| Instrument | CSV-Quelle | FHIR-Ressource | Beschreibung |
-|-----------|-----------|----------------|-------------|
-| **LCLA** | `lclat_summary` | Observation | Low-Contrast Letter Acuity Test — Kontrastsehschärfe |
-| **9HPT** | `mdt_summary` | Observation | Nine-Hole Peg Test — Handfeinmotorik |
-| **SDMT** | `npst_summary` | Observation | Symbol Digit Modalities Test — kognitive Verarbeitungsgeschwindigkeit |
-| **T25FW** | `wst_summary` | Observation | Timed 25-Foot Walk — Gehgeschwindigkeit |
-| **Neuro-QoL** | `nq_detail` | QuestionnaireResponse + Observation | Patient-Reported Outcomes (CAT) |
-| **Anamnese** | `mh_detail` | QuestionnaireResponse | Medizinische Vorgeschichte |
-| **MRT** | `mrt` | DiagnosticReport + Observation | Hirn-Volumetrie und Läsionssegmentierung |
-| **Patientenprofil** | `patient_profile` | Patient + Condition | Demografie, MS-Diagnose, Komorbiditäten |
-| **Assessment-Wrapper** | `wrapper_overview` | Encounter + Device | Sitzungsmetadaten und Geräteinformationen |
+| Instrument             | CSV-Quelle         | FHIR-Ressource                      | Beschreibung                                                          |
+| ---------------------- | ------------------ | ----------------------------------- | --------------------------------------------------------------------- |
+| **LCLA**               | `lclat_summary`    | Observation                         | Low-Contrast Letter Acuity Test — Kontrastsehschärfe                  |
+| **9HPT**               | `mdt_summary`      | Observation                         | Nine-Hole Peg Test — Handfeinmotorik                                  |
+| **SDMT**               | `npst_summary`     | Observation                         | Symbol Digit Modalities Test — kognitive Verarbeitungsgeschwindigkeit |
+| **T25FW**              | `wst_summary`      | Observation                         | Timed 25-Foot Walk — Gehgeschwindigkeit                               |
+| **Neuro-QoL**          | `nq_detail`        | QuestionnaireResponse + Observation | Patient-Reported Outcomes (CAT)                                       |
+| **Anamnese**           | `mh_detail`        | QuestionnaireResponse               | Medizinische Vorgeschichte                                            |
+| **MRT**                | `mrt`              | DiagnosticReport + Observation      | Hirn-Volumetrie und Läsionssegmentierung                              |
+| **Patientenprofil**    | `patient_profile`  | Patient + Condition                 | Demografie, MS-Diagnose, Komorbiditäten                               |
+| **Assessment-Wrapper** | `wrapper_overview` | Encounter + Device                  | Sitzungsmetadaten und Geräteinformationen                             |
 
 ## Projektstruktur
 
@@ -181,7 +181,7 @@ Die benutzerdefinierte Operation `$cohort-submit` wird als Thin-JAR-Extension ge
 
 - **Referenzielle Integrität** — dreistufige Verarbeitung (Patienten → Encounters → Observations/Reports) gemäß Ressourcen-Abhängigkeitsgraph
 - **Group-Hierarchie** — Wurzelgruppe (Kohorte) → Importgruppen (je Importvorgang) → Patientenreferenzen, für vollständige Nachvollziehbarkeit
-- **Zwei Import-Modi** — *Merge* (Conditional PUT, Upsert) und *Distinct* (Conditional POST, nur Anlegen neuer Ressourcen)
+- **Zwei Import-Modi** — _Merge_ (Conditional PUT, Upsert) und _Distinct_ (Conditional POST, nur Anlegen neuer Ressourcen)
 - **Provenance** — automatische Audit-Trail-Dokumentation je Import
 
 Details: [`docs/cohort_submit_specification.md`](docs/cohort_submit_specification.md)
@@ -212,12 +212,12 @@ mvn verify
 
 ## Dokumentation
 
-| Dokument | Inhalt |
-|----------|--------|
-| [`docs/data_schema_summary.md`](docs/data_schema_summary.md) | Zusammenfassung aller 9 CSV-Datenschemata mit Spalten, Wertebereichen und Missing-Raten |
-| [`docs/fhir_mapping_concept.md`](docs/fhir_mapping_concept.md) | FHIR-Mapping-Konzept, Ressourcen-Zuordnung, Terminologie-Status |
+| Dokument                                                                     | Inhalt                                                                                                                          |
+| ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| [`docs/data_schema_summary.md`](docs/data_schema_summary.md)                 | Zusammenfassung aller 9 CSV-Datenschemata mit Spalten, Wertebereichen und Missing-Raten                                         |
+| [`docs/fhir_mapping_concept.md`](docs/fhir_mapping_concept.md)               | FHIR-Mapping-Konzept, Ressourcen-Zuordnung, Terminologie-Status                                                                 |
 | [`docs/cohort_submit_specification.md`](docs/cohort_submit_specification.md) | `$cohort-submit` Schnittstellenspezifikation — OperationDefinition, Import-Modi, Anwendungsfälle, Sequenz- und Klassendiagramme |
-| [`docs/phenotyping_research.md`](docs/phenotyping_research.md) | Literaturrecherche zu digitaler Phänotypisierung bei MS |
+| [`docs/phenotyping_research.md`](docs/phenotyping_research.md)               | Literaturrecherche zu digitaler Phänotypisierung bei MS                                                                         |
 
 ## Lizenz
 
