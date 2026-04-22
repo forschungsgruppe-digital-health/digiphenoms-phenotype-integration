@@ -1,4 +1,4 @@
 unnamed__0,patientalias,sty_date,pri_date,run_by,prog_ver,rad_acpt,bpf,bpf_chg,t2lesvol,t2overbv,nt2lescn,nt2lesgt,nt2lesvo,gmf,t2voljux,t2volprv,t2volinf,wmf,cgmvol,dgmvol,cgmf,dgmf,thalvol,thalf,t2voloth,segvisqc,segcomm,scanner,flrdcpp,t1dcpp,consent_status
-0,abc-1001,2022-03-01,,ACCA,KEHeviev3.2.4rc.f2,,0.78,-0.01,4.2,0.1034,,,,0.8,1.1,2.3,0.45,0.33,520.3,48.7,0.38,0.036,12.4,0.245,0.634,,,MAGNETRONUS Viva,N,N,granted
-1,abc-1001,2023-01-05,2022-03-01,ACCA,KEHeviev3.2.4rc.f2,,0.71,-0.05,4.2,0.1034,6.0,6.0,0.123,0.8,1.1,2.3,0.45,0.33,520.3,48.7,0.38,0.036,12.4,0.245,0.634,,,MAGNETRONUS Viva,N,N,granted
-2,abc-1002,2022-03-08,,ACCA,KEHeviev3.2.4rc.f2,,0.72,-0.03,12.5,0.010653,,,,0.41,6.8,2.5,0.31,485.1,44.2,0.35,0.032,10.8,,0.236,0.721,PASS,lesions_confirmed,MAGNETRONUS Viva,N,N,granted
+0,abc-1001,2022-03-01,,ACCA,KEHeviev3.2.4rc.f2,,0.78,,4.2,0.1034,,,,0.8,1.1,2.3,0.45,0.33,520.3,48.7,0.38,0.036,12.4,0.245,0.634,,,MAGNETRONUS Viva,N,N,granted
+1,abc-1001,2023-01-05,2022-03-01,ACCA,KEHeviev3.2.4rc.f2,,0.82,-2.13,8.9,0.0611,6.0,6.0,0.123,0.423,10.24,8.9,1.32,0.36,322.4,33.8,0.44,0.078,8.9,0.245,0.634,,,MAGNETRONUS Viva,N,N,granted
+2,abc-1002,2022-03-08,,ACCA,KEHeviev3.2.4rc.f2,,0.72,,12.5,0.010653,,,,0.41,6.8,2.5,0.31,485.1,44.2,0.35,0.032,10.8,,0.236,0.721,PASS,lesions_confirmed,MAGNETRONUS Viva,N,N,granted

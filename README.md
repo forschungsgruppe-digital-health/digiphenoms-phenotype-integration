@@ -30,7 +30,7 @@ CSV-Rohdaten → FHIR Mapping → Collection Bundle → $cohort-submit → HAPI 
 Informationen über MRT-Segmentierung eines Patienten wie z.B. Läsionsanalyse und Volumetrie:
 - rad_acpt (radiologische Freigabe des Patienten) ist in der Regel leer
 - pri_date ist mit dem vorherigen sty_date gleich, wenn es bereits eine Untersuchung gab (leer, falls 1. Untersuchung)
-- nt2lescn, nt2lesgt, nt2lesvo geben an, ob seit der letzten Untersuchung neue Läsionen dazugekommen sind
+- nt2lescn, nt2lesgt, nt2lesvo, bpf_chg geben an, ob seit der letzten Untersuchung neue Läsionen dazugekommen sind
 => sind leer, falls es die 1. Untersuchung ist
 
 **MDT**
