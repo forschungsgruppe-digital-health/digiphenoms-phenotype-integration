@@ -47,6 +47,15 @@ Messung der Lebensqualität und funktionale Einschränkungen: Neuro-QoL (Neurolo
 - genug Fragen gestellt wurden (4–8)
 - oder Genauigkeit erreicht ist (Standard Fehler ≤ 0.3)
 
+Assessment-Struktur:
+```
+Assessment
+  └── Module
+        └── Subtest
+              ├── Items (Fragen)
+              └── Score (T-Score + Fehler)
+```
+
 
 **LCLAT**
 Low-Contrast Letter Acuity Test ist ein Sehtest, bei dem der Patient Buchstaben einer Zeile mit definiertem Kontrast einliest
