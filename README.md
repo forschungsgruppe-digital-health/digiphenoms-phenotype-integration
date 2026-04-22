@@ -27,15 +27,33 @@ CSV-Rohdaten → FHIR Mapping → Collection Bundle → $cohort-submit → HAPI 
 ### Erklärungen zu bestimmten Dateien
 
 **MRT**
+Informationen über MRT-Segmentierung eines Patienten wie z.B. Läsionsanalyse und Volumetrie:
+- rad_acpt (radiologische Freigabe des Patienten) ist in der Regel leer
 - pri_date ist mit dem vorherigen sty_date gleich, wenn es bereits eine Untersuchung gab (leer, falls 1. Untersuchung)
 - nt2lescn, nt2lesgt, nt2lesvo geben an, ob seit der letzten Untersuchung neue Läsionen dazugekommen sind
 => sind leer, falls es die 1. Untersuchung ist
 
 **MDT**
-Manual Dexterity Test (MDT), hier wurd ein 9-Hole Peg Test durchgeführt:
+Manual Dexterity Test (MDT) ist ein Motorik-Test. Hier wurd ein 9-Hole Peg Test durchgeführt:
 - pegs_dropped: Antwortskala geht von 0 bis 5
 => 5 bedeutet, dass das Einsortieren vom Stäbchen 5 Mal oder häufiger nicht funktioniert hat
 => falls pegd_dropped leer, siehe trial_state: Hier kann "Restarted" oder "Timed Out" stehen, falls Test nicht in vorgegebener Zeit von 120s beendet wurde
+
+Assessment-Struktur:
+```
+Assessment
+  └── Module
+        └── Trial (Durchlauf)
+              └── Event (Peg-Aktion/Versuch)
+```
+
+Zu einem Peg-Durchlauf gehörne folgende Informationen:
+- Trial Index → meist 0 oder 1 (zwei Durchgänge)
+- Trial Start/Stop Time
+- Trial Duration
+- Trial State → Completed, Restarted, Timed Out
+- Peg Type → „row“ oder „grid“
+- Hand Used → rechte oder linke Hand
 
 **NQ**
 Messung der Lebensqualität und funktionale Einschränkungen: Neuro-QoL (Neurological Quality of Life), in Form eines Computerized Adaptive Tests (CAT), der sich durch Min/Max Fragen, T Score und den Standardfehler charakterisiert. Der Test läuft wie folgt ab:
