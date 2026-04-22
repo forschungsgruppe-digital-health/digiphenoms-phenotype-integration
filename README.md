@@ -49,10 +49,20 @@ Messung der Lebensqualität und funktionale Einschränkungen: Neuro-QoL (Neurolo
 
 
 **LCLAT**
+Low-Contrast Letter Acuity Test ist ein Sehtest, bei dem der Patient Buchstaben einer Zeile mit definiertem Kontrast einliest
+- Schwierigkeit wird durch LogMAR-Wert definiert
 - alle Felder mit "Total_Number_Correct_at_x_%" beinhalten Anzahlen richtig beantworteter Fragen
 => falls Felder den Wert `0.0` haben, wurden keine Fragen richtig beantwortet
 - falls einzelne Zellen und nicht alle Zellen einer Zeile leer sind, wurden nicht alle Tests durchgeführt
 - Wenn sämtliche Zellen in einer Zeile leer sind wurde Test abgebrochen => dann gibt es in Spalte "Cancel Reason" einen entsprechenden Eintrag
+
+Assessment-Struktur:
+```
+Assessment
+  └── Module
+        └── Trial (Line)
+              └── Item (Letter)
+```
 
 
 ## Projektstruktur
