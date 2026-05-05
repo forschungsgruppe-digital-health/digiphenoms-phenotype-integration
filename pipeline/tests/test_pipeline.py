@@ -90,10 +90,10 @@ class TestFHIRMapperFile:
         )
         mapper = FHIRMapper(mapping, builder)
         resources = mapper.map_file(fixtures_dir / "mrt_training.csv")
-        # 2 rows × 5 targets = 10 resources
+        # 3 rows × 5 targets = 15 resources
         types = [r["resourceType"] for r in resources]
-        assert types.count("DiagnosticReport") == 2
-        assert types.count("Observation") == 8  # 4 per row
+        assert types.count("DiagnosticReport") == 3
+        assert types.count("Observation") == 12  # 4 per row
 
     def test_map_wrapper_overview(self, builder, config_dir, fixtures_dir):
         mapping = MappingConfig.from_yaml(
