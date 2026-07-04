@@ -426,3 +426,96 @@ class TestSDMTMapping:
         code = resource["code"]
         # Should have primary custom code + additional SNOMED coding in static_fields
         assert code["coding"][0]["code"] == "sdmt-test"
+
+
+# ---------------------------------------------------------------------------
+# Chronology guard (synthetic ML data weakness)
+# ---------------------------------------------------------------------------
+class TestChronologyFix:
+    """Inverted Period start/end pairs are swapped during resource building.
+
+    The synthetic datasets from the ML server do not guarantee chronological
+    timestamps — a documented weakness. FHIR invariant per-1 requires
+    Period.start <= Period.end.
+    """
+
+    @pytest.fixture
+    def wrapper_mapping(self, config_dir):
+        return MappingConfig.from_yaml(
+            config_dir / "mapping" / "wrapper_overview.mapping.yaml"
+        )
+
+    @pytest.fixture
+    def inverted_row(self):
+        return pd.Series(
+            {
+                "Assessment UUID": "assess-inv",
+                "Patient UUID": "abc-1001",
+                "Assessor UUID": "assessor-01",
+                # End before start — as produced by the synthetic data
+                "Assessment Started At": "Mon, 14 Mar 2022 08:20:00 +0000",
+                "Assessment Ended At": "Mon, 14 Mar 2022 08:00:00 +0000",
+                "Organization": "Dresden Carus",
+                "Successful Module Count": 5,
+            }
+        )
+
+    def test_inverted_encounter_period_swapped(self, builder, wrapper_mapping, inverted_row):
+        encounter_target = wrapper_mapping.targets[0]
+        resource = builder.build(inverted_row, encounter_target)
+        # Validated resources carry datetime objects
+        period = resource["period"]
+        assert period["start"] < period["end"]
+        assert period["start"].isoformat().startswith("2022-03-14T08:00:00")
+        assert period["end"].isoformat().startswith("2022-03-14T08:20:00")
+
+    def test_chronological_period_untouched(self, builder, wrapper_mapping, inverted_row):
+        row = inverted_row.copy()
+        row["Assessment Started At"] = "Mon, 14 Mar 2022 08:00:00 +0000"
+        row["Assessment Ended At"] = "Mon, 14 Mar 2022 08:20:00 +0000"
+        resource = builder.build(row, wrapper_mapping.targets[0])
+        assert resource["period"]["start"].isoformat().startswith("2022-03-14T08:00:00")
+        assert resource["period"]["end"].isoformat().startswith("2022-03-14T08:20:00")
+
+    def test_fix_disabled_via_config(self, pipeline_cfg, config_dir, wrapper_mapping, inverted_row):
+        from digiphenoms_fhir.mapper import ResourceBuilder
+
+        pipeline_cfg.data_quality = {"fix_chronology": False}
+        builder = ResourceBuilder(pipeline_cfg, config_dir)
+        resource = builder.build(inverted_row, wrapper_mapping.targets[0])
+        # Inverted period is preserved when the guard is switched off
+        assert resource["period"]["start"].isoformat().startswith("2022-03-14T08:20:00")
+        assert resource["period"]["end"].isoformat().startswith("2022-03-14T08:00:00")
+
+    def test_nested_periods_fixed(self, builder):
+        resource = {
+            "resourceType": "Observation",
+            "id": "obs-1",
+            "effectivePeriod": {
+                "start": "2022-03-14T08:20:00+00:00",
+                "end": "2022-03-14T08:00:00+00:00",
+            },
+        }
+        builder._fix_period_chronology(resource)
+        assert resource["effectivePeriod"]["start"] == "2022-03-14T08:00:00+00:00"
+        assert resource["effectivePeriod"]["end"] == "2022-03-14T08:20:00+00:00"
+
+    def test_equal_timestamps_untouched(self, builder):
+        period = {"start": "2022-03-14T08:00:00+00:00", "end": "2022-03-14T08:00:00+00:00"}
+        builder._fix_period_chronology({"period": dict(period)})
+        resource = {"period": dict(period)}
+        builder._fix_period_chronology(resource)
+        assert resource["period"] == period
+
+    def test_non_datetime_strings_ignored(self, builder):
+        resource = {"period": {"start": "not-a-date", "end": "also-not"}}
+        builder._fix_period_chronology(resource)
+        assert resource["period"]["start"] == "not-a-date"
+
+    def test_mixed_timezone_awareness_ignored(self, builder):
+        # Naive vs aware timestamps cannot be compared — must not crash
+        resource = {
+            "period": {"start": "2022-03-14T08:20:00", "end": "2022-03-14T08:00:00+00:00"}
+        }
+        builder._fix_period_chronology(resource)
+        assert resource["period"]["start"] == "2022-03-14T08:20:00"

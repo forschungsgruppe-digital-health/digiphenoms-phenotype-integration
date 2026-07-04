@@ -555,3 +555,169 @@ class TestPipelineSubmitIntegration:
 
             with pytest.raises(CohortSubmitError):
                 pipeline.run(data_dir=fixtures_dir)
+
+
+class TestNeuroQoLDetailMapping:
+    """nq_detail.mapping.yaml → grouped QuestionnaireResponse + T-Score Observation."""
+
+    @pytest.fixture
+    def resources(self, builder, config_dir, fixtures_dir):
+        mapping = MappingConfig.from_yaml(
+            config_dir / "mapping" / "nq_detail.mapping.yaml"
+        )
+        mapper = FHIRMapper(mapping, builder)
+        return mapper.map_file(fixtures_dir / "nq-detail_training.csv")
+
+    def test_one_qr_and_observation_per_subtest(self, resources):
+        qrs = [r for r in resources if r["resourceType"] == "QuestionnaireResponse"]
+        observations = [r for r in resources if r["resourceType"] == "Observation"]
+        # Fixture has two subtest keys: upper_limbs and sleep
+        assert len(qrs) == 2
+        assert len(observations) == 2
+
+    def test_items_grouped_per_subtest(self, resources):
+        # Resource ids are sanitized: upper_limbs → upper-limbs (FHIR id pattern)
+        qr = next(r for r in resources if r["id"] == "qr-nq-assess-2001-upper-limbs")
+        assert qr["status"] == "completed"
+        assert len(qr["item"]) == 3
+        assert [i["linkId"] for i in qr["item"]] == [
+            "upper_limbs-0",
+            "upper_limbs-1",
+            "upper_limbs-2",
+        ]
+        answers = [item["answer"][0]["valueInteger"] for item in qr["item"]]
+        assert answers == [3, 3, 4]
+        assert "Nutella" in qr["item"][0]["text"]
+
+    def test_qr_references_and_authored(self, resources):
+        qr = next(r for r in resources if r["id"] == "qr-nq-assess-2001-sleep")
+        assert qr["subject"]["reference"] == "Patient/pat-abc-1001"
+        assert qr["encounter"]["reference"] == "Encounter/enc-assess-2001"
+        # Validated resources carry datetime objects; the timezone offset is
+        # appended during cleanup (R4B dateTime requirement)
+        authored = qr["authored"].isoformat()
+        assert authored.startswith("2022-03-14T08:06:30")
+        assert "+00:00" in authored
+
+    def test_tscore_observation_values(self, resources):
+        obs = next(r for r in resources if r["id"] == "obs-nq-assess-2001-sleep")
+        assert obs["status"] == "final"
+        assert float(obs["valueQuantity"]["value"]) == 58.1
+        components = {
+            c["code"]["coding"][0]["code"]: float(c["valueQuantity"]["value"])
+            for c in obs["component"]
+        }
+        assert components["standard-error"] == 2.8
+        assert components["raw-score"] == 15.0
+
+    def test_domain_translated_via_terminology(self, resources):
+        obs = next(r for r in resources if r["id"] == "obs-nq-assess-2001-sleep")
+        codings = obs["code"]["coding"]
+        assert len(codings) == 2
+        loinc = codings[1]
+        assert loinc["system"] == "http://loinc.org"
+        assert loinc["code"] == "67908-4"
+
+    def test_unmapped_domain_falls_back_to_key(self, resources):
+        obs = next(r for r in resources if r["id"] == "obs-nq-assess-2001-upper-limbs")
+        # upper_limbs is not in the concept map → default passthrough
+        assert obs["code"]["coding"][1]["code"] == "upper_limbs"
+
+
+class TestMedicalHistoryMapping:
+    """mh_detail.mapping.yaml → grouped QuestionnaireResponse with linkIds."""
+
+    @pytest.fixture
+    def resources(self, builder, config_dir, fixtures_dir):
+        mapping = MappingConfig.from_yaml(
+            config_dir / "mapping" / "mh_detail.mapping.yaml"
+        )
+        mapper = FHIRMapper(mapping, builder)
+        return mapper.map_file(fixtures_dir / "mh-detail_training.csv")
+
+    def test_single_grouped_questionnaire_response(self, resources):
+        assert len(resources) == 1
+        qr = resources[0]
+        assert qr["resourceType"] == "QuestionnaireResponse"
+        assert qr["id"] == "qr-mh-assess-2001-mod-mh-001"
+        assert qr["status"] == "completed"
+        assert (
+            qr["questionnaire"]
+            == "https://digiphenoms.tu-dresden.de/fhir/Questionnaire/medical-history"
+        )
+
+    def test_items_carry_link_ids(self, resources):
+        items = resources[0]["item"]
+        assert [i["linkId"] for i in items] == [
+            "education_duration",
+            "relapses",
+            "relationship",
+            "medication_confirmation",
+        ]
+
+    def test_answers_are_strings(self, resources):
+        items = resources[0]["item"]
+        assert items[0]["answer"][0]["valueString"] == "9"
+        assert items[1]["answer"][0]["valueString"] == "0"
+        assert items[2]["answer"][0]["valueString"] == "married"
+        # Question without a response key has no answer
+        assert "answer" not in items[3]
+
+    def test_authored_from_module_start(self, resources):
+        assert resources[0]["authored"].isoformat().startswith("2022-03-14T08:00:00")
+
+
+class TestValidationRegressions:
+    """All fixture-derived resources must pass strict R4B model validation.
+
+    Historically several mappings produced resources that fell back to the
+    unvalidated dict (missing Observation.status, missing Device sub-fields,
+    ids violating the FHIR id pattern). HAPI rejects such resources on
+    import, so any validation fallback is a regression.
+    """
+
+    def test_no_validation_fallbacks_across_fixtures(self, pipeline, fixtures_dir, caplog):
+        import logging
+
+        with caplog.at_level(logging.WARNING, logger="digiphenoms.fhir_mapper"):
+            pipeline.run(data_dir=fixtures_dir)
+        validation_warnings = [
+            r.getMessage()
+            for r in caplog.records
+            if "FHIR model validation" in r.getMessage()
+        ]
+        assert validation_warnings == []
+
+    def test_device_names_carry_mandatory_type(self, builder, config_dir, fixtures_dir):
+        mapping = MappingConfig.from_yaml(
+            config_dir / "mapping" / "wrapper_overview.mapping.yaml"
+        )
+        resources = FHIRMapper(mapping, builder).map_file(
+            fixtures_dir / "wrapper-overview_training.csv"
+        )
+        devices = [r for r in resources if r["resourceType"] == "Device"]
+        assert devices
+        for device in devices:
+            for device_name in device.get("deviceName", []):
+                assert device_name["type"] == "other"
+                assert device_name["name"]
+
+    def test_mri_observations_have_status(self, builder, config_dir, fixtures_dir):
+        mapping = MappingConfig.from_yaml(config_dir / "mapping" / "mrt.mapping.yaml")
+        resources = FHIRMapper(mapping, builder).map_file(
+            fixtures_dir / "mrt_training.csv"
+        )
+        observations = [r for r in resources if r["resourceType"] == "Observation"]
+        assert observations
+        assert all(o["status"] == "final" for o in observations)
+
+    def test_all_resource_ids_match_fhir_pattern(self, pipeline, fixtures_dir):
+        import re
+
+        pattern = re.compile(r"^[A-Za-z0-9\-.]{1,64}$")
+        results = pipeline.run(data_dir=fixtures_dir)
+        for step, resources in results.items():
+            for resource in resources:
+                assert pattern.match(resource["id"]), (
+                    f"{step}: invalid FHIR id {resource['id']!r}"
+                )
