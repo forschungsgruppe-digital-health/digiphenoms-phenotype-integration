@@ -64,6 +64,8 @@ targets:
     id_template: "obs-mri-atrophy-{patientalias}-{sty_date}"
 
     static_fields:
+      # Observation.status is mandatory (R4B)
+      status: "final"
       category:
         - system: "http://terminology.hl7.org/CodeSystem/observation-category"
           code: "imaging"
@@ -116,6 +118,8 @@ targets:
     id_template: "obs-mri-lesions-{patientalias}-{sty_date}"
 
     static_fields:
+      # Observation.status is mandatory (R4B)
+      status: "final"
       category:
         - system: "http://terminology.hl7.org/CodeSystem/observation-category"
           code: "imaging"
@@ -185,6 +189,8 @@ targets:
   - resource_type: "Observation"
     id_template: "obs-mri-tissue-{patientalias}-{sty_date}"
     static_fields:
+      # Observation.status is mandatory (R4B)
+      status: "final"
       category:
         - system: "http://terminology.hl7.org/CodeSystem/observation-category"
           code: "imaging"
@@ -243,6 +249,8 @@ targets:
   - resource_type: "Observation"
     id_template: "obs-mri-thalamus-{patientalias}-{sty_date}"
     static_fields:
+      # Observation.status is mandatory (R4B)
+      status: "final"
       category:
         - system: "http://terminology.hl7.org/CodeSystem/observation-category"
           code: "imaging"

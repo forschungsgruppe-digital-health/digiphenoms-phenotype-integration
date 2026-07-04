@@ -199,9 +199,9 @@ class ResourceBuilder:
             "resourceType": target["resource_type"],
         }
 
-        # Resource ID
-        resource["id"] = self._interpolate(
-            target.get("id_template", ""), row, extra_context
+        # Resource ID (sanitized to the FHIR id pattern [A-Za-z0-9\-.]{1,64})
+        resource["id"] = self._sanitize_id(
+            self._interpolate(target.get("id_template", ""), row, extra_context)
         )
 
         # Meta / profile
@@ -250,7 +250,9 @@ class ResourceBuilder:
         if "result_references" in target:
             resource["result"] = [
                 {
-                    "reference": self._interpolate(ref, row, extra_context),
+                    "reference": self._sanitize_reference(
+                        self._interpolate(ref, row, extra_context)
+                    ),
                 }
                 for ref in target["result_references"]
             ]
@@ -297,7 +299,11 @@ class ResourceBuilder:
                         continue
 
                 item = {}
-                if "linkId_source" in items_cfg:
+                if "linkId_template" in items_cfg:
+                    item["linkId"] = self._interpolate(
+                        items_cfg["linkId_template"], row
+                    )
+                elif "linkId_source" in items_cfg:
                     item["linkId"] = str(row.get(items_cfg["linkId_source"], ""))
                 if "text_source" in items_cfg:
                     text = row.get(items_cfg["text_source"])
@@ -360,6 +366,27 @@ class ResourceBuilder:
             return None
         return val
 
+    @staticmethod
+    def _sanitize_id(value: str) -> str:
+        """Normalize a string to a valid FHIR resource id.
+
+        FHIR R4B ids must match ``[A-Za-z0-9\\-.]{1,64}`` — source values
+        (e.g. Neuro-QoL subtest keys like ``upper_limbs`` or arbitrary
+        patient UUIDs from synthetic datasets) may contain other characters,
+        which HAPI rejects on import.
+        """
+        if not value:
+            return value
+        return re.sub(r"[^A-Za-z0-9\-.]", "-", str(value))[:64]
+
+    @classmethod
+    def _sanitize_reference(cls, reference: str) -> str:
+        """Sanitize the id part of a ``ResourceType/id`` literal reference."""
+        if "/" in reference:
+            ref_type, ref_id = reference.split("/", 1)
+            return f"{ref_type}/{cls._sanitize_id(ref_id)}"
+        return reference
+
     def _build_static(self, key: str, value: Any) -> Any:
         """Build a static field value (handles nested dicts for CodeableConcept etc.)."""
         if isinstance(value, dict) and "system" in value and "code" in value:
@@ -408,7 +435,11 @@ class ResourceBuilder:
                 ref_id = fm["id_template"].replace("{value}", str(val))
             else:
                 ref_id = str(val)
-            self._set_nested(resource, target, {"reference": f"{ref_type}/{ref_id}"})
+            self._set_nested(
+                resource,
+                target,
+                {"reference": f"{ref_type}/{self._sanitize_id(ref_id)}"},
+            )
 
         elif ftype == "datetime":
             fmt = fm.get("format")
@@ -652,7 +683,8 @@ class ResourceBuilder:
                             extras = coding_entry.pop("additional_codings", None)
                             # Also handle nested 'coding' within a coding entry
                             nested = coding_entry.pop("coding", None)
-                            flattened.append(coding_entry)
+                            if coding_entry:  # skip husks emptied by the pops
+                                flattened.append(coding_entry)
                             if extras and isinstance(extras, list):
                                 flattened.extend(extras)
                             if nested and isinstance(nested, list):
@@ -698,6 +730,32 @@ class ResourceBuilder:
             val = resource.get(field_name)
             if isinstance(val, str) and re.match(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$", val):
                 resource[field_name] = val + "+00:00"
+
+        # --- Device: drop entries whose mapped value was missing ------------
+        # Static fields pre-seed deviceName[].type / property[].type (both
+        # mandatory in R4B); if the CSV row had no name/value the husk entry
+        # would fail validation.
+        if resource.get("resourceType") == "Device":
+            names = resource.get("deviceName")
+            if isinstance(names, list):
+                kept = [n for n in names if isinstance(n, dict) and n.get("name")]
+                if kept:
+                    resource["deviceName"] = kept
+                else:
+                    resource.pop("deviceName", None)
+            props = resource.get("property")
+            if isinstance(props, list):
+                kept = [
+                    p
+                    for p in props
+                    if isinstance(p, dict)
+                    and p.get("type")
+                    and (p.get("valueQuantity") or p.get("valueCode"))
+                ]
+                if kept:
+                    resource["property"] = kept
+                else:
+                    resource.pop("property", None)
 
         # --- QuestionnaireResponse.identifier: list → single (R4B: 0..1) -----
         rt = resource.get("resourceType")

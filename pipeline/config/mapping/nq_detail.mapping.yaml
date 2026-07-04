@@ -40,6 +40,8 @@ targets:
 
     # Items are generated from grouped rows
     items_from_rows:
+      # QuestionnaireResponse.item.linkId is mandatory (R4B)
+      linkId_template: "{Key}-{Subtest Index}"
       text_source: "Question Title"
       answer_source: "Response Value"
       answer_type: "valueInteger"
@@ -54,6 +56,8 @@ targets:
     group_by: ["Assessment UUID", "Module UUID", "Key"]
 
     static_fields:
+      # Observation.status is mandatory (R4B)
+      status: "final"
       category:
         - system: "http://terminology.hl7.org/CodeSystem/observation-category"
           code: "survey"
