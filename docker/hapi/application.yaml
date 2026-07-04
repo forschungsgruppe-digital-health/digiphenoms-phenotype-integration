@@ -25,6 +25,15 @@ hapi:
       log_exceptions: true
       error_format: "Path[${servletPath}] Source[${requestHeader.x-forwarded-for}] Operation[${operationType} ${operationName} ${idOrResourceName}] UA[${requestHeader.user-agent}] Params[${requestParameters}] ResponseEncoding[${responseEncodingNoDefault}]"
 
+# ML server (synthetic data job API) — used by the $ml-* FHIR operations.
+# The URL points at the SSH port forwarding towards the ML server; the
+# Bearer token is injected via environment variable (never committed).
+ml:
+  server:
+    url: ${ML_SERVER_URL:http://localhost:8000}
+    token: ${ML_SERVER_TOKEN:${API_AUTH_TOKEN:}}
+    timeout-seconds: 60
+
 spring:
   datasource:
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:hapi}
