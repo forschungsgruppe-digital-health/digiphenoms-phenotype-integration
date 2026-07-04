@@ -34,6 +34,7 @@ import hashlib
 import importlib
 import json
 import logging
+import os
 import re
 from dataclasses import dataclass
 from datetime import datetime
@@ -101,6 +102,8 @@ class PipelineConfig:
     steps: list[dict]
     default_organization: dict
     cohort_submit: dict
+    ml_server: dict
+    data_quality: dict
     raw: dict
 
     @classmethod
@@ -114,6 +117,8 @@ class PipelineConfig:
             steps=raw.get("pipeline", {}).get("steps", raw.get("steps", [])),
             default_organization=raw.get("default_organization", {}),
             cohort_submit=raw.get("cohort_submit", {}),
+            ml_server=raw.get("ml_server", {}),
+            data_quality=raw.get("data_quality", {}),
             raw=raw,
         )
 
@@ -179,6 +184,7 @@ class ResourceBuilder:
         self.pipeline_cfg = pipeline_cfg
         self.config_dir = config_dir
         self._terminology_cache: dict[str, TerminologyMap] = {}
+        self._fix_chronology = pipeline_cfg.data_quality.get("fix_chronology", True)
 
     # -- public API ----------------------------------------------------------
 
@@ -546,6 +552,8 @@ class ResourceBuilder:
         passing through the ``fhir.resources.R4B`` pydantic model.  Returns the
         validated dict, or the original dict with a warning on failure.
         """
+        if self._fix_chronology:
+            self._fix_period_chronology(resource_dict)
         self._cleanup_resource(resource_dict)
         resource_type = resource_dict.get("resourceType", "")
         try:
@@ -558,6 +566,41 @@ class ResourceBuilder:
         except Exception as exc:
             logger.warning("FHIR model validation for %s: %s", resource_type, exc)
             return resource_dict
+
+    @staticmethod
+    def _fix_period_chronology(resource: dict) -> None:
+        """Swap inverted ``start``/``end`` pairs in Period-like structures.
+
+        The synthetic datasets from the ML server do not guarantee
+        chronological timestamps (an assessment's end may precede its
+        start). FHIR requires ``Period.start <= Period.end`` (invariant
+        per-1), so inverted pairs are swapped in place. Controlled by
+        ``data_quality.fix_chronology`` in pipeline.yaml (default: on).
+        """
+
+        def _walk(obj: Any) -> None:
+            if isinstance(obj, dict):
+                start, end = obj.get("start"), obj.get("end")
+                if isinstance(start, str) and isinstance(end, str):
+                    try:
+                        if datetime.fromisoformat(end) < datetime.fromisoformat(start):
+                            obj["start"], obj["end"] = end, start
+                            logger.warning(
+                                "Swapped inverted period (%s > %s) in %s/%s",
+                                start,
+                                end,
+                                resource.get("resourceType", "?"),
+                                resource.get("id", "?"),
+                            )
+                    except (ValueError, TypeError):
+                        pass
+                for v in obj.values():
+                    _walk(v)
+            elif isinstance(obj, list):
+                for item in obj:
+                    _walk(item)
+
+        _walk(resource)
 
     @staticmethod
     def _cleanup_resource(resource: dict) -> None:
@@ -1225,6 +1268,34 @@ def main():
         choices=["merge", "distinct"],
         help="Import mode for cohort submission (overrides config)",
     )
+    parser.add_argument(
+        "--ml-dataset-job",
+        type=str,
+        metavar="SYNTHESIS_JOB_ID",
+        help=(
+            "Download the synthetic dataset of this ML server synthesis job "
+            "into the data directory before mapping (token: $API_AUTH_TOKEN)"
+        ),
+    )
+    parser.add_argument(
+        "--ml-server-url",
+        type=str,
+        help=(
+            "ML server base URL (default: $ML_SERVER_URL, then "
+            "pipeline.yaml ml_server.base_url, then http://localhost:8000)"
+        ),
+    )
+    parser.add_argument(
+        "--ml-wait",
+        action="store_true",
+        help="Wait for the ML synthesis job to finish before downloading",
+    )
+    parser.add_argument(
+        "--ml-poll-interval",
+        type=float,
+        default=10.0,
+        help="Polling interval in seconds for --ml-wait (default: 10)",
+    )
     args = parser.parse_args()
 
     logging.basicConfig(
@@ -1249,6 +1320,34 @@ def main():
         pipeline.pipeline_cfg.cohort_submit.setdefault("enabled", True)
     if args.import_mode:
         pipeline.pipeline_cfg.cohort_submit["mode"] = args.import_mode
+
+    # Fetch synthetic dataset from the ML server before mapping
+    if args.ml_dataset_job:
+        from digiphenoms_fhir.ml_client import BASE_URL_ENV_VAR, MLServerClient
+
+        ml_cfg = pipeline.pipeline_cfg.ml_server
+        client = MLServerClient(
+            base_url=(
+                args.ml_server_url
+                or os.environ.get(BASE_URL_ENV_VAR)
+                or ml_cfg.get("base_url")
+            ),
+            timeout=ml_cfg.get("timeout", 60.0),
+        )
+        if args.ml_wait:
+            client.wait_for_job(
+                args.ml_dataset_job,
+                poll_interval=args.ml_poll_interval,
+                timeout=ml_cfg.get("wait_timeout", 3600.0),
+            )
+        data_path = Path(args.data)
+        data_path.mkdir(parents=True, exist_ok=True)
+        files = client.download_dataset(args.ml_dataset_job, data_path)
+        logger.info(
+            "Fetched %d dataset file(s) from ML server job %s",
+            len(files),
+            args.ml_dataset_job,
+        )
 
     results = pipeline.run(data_dir=args.data, output_dir=args.output)
 

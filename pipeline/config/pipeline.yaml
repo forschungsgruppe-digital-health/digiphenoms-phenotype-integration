@@ -111,3 +111,18 @@ cohort_submit:
   timeout: 300                                 # seconds
   batch_label_prefix: "DigiPhenoMS Pipeline"
   verify_ssl: true
+
+# ML server — synthetic data job API (see docs/ml_server_api.md)
+# Reached through SSH port forwarding; the Bearer token is read from
+# the API_AUTH_TOKEN environment variable (never stored in config).
+ml_server:
+  base_url: "http://localhost:8000"
+  timeout: 60                                  # seconds per request
+  wait_timeout: 3600                           # seconds for --ml-wait polling
+
+# Data quality guards applied during resource building
+data_quality:
+  # The synthetic ML server data does not guarantee chronological
+  # timestamps (assessment end may precede start). When enabled,
+  # inverted Period start/end pairs are swapped (FHIR invariant per-1).
+  fix_chronology: true

@@ -21,6 +21,7 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Topic :: Scientific/Engineering :: Medical Science Apps.",
 ]
 dependencies = [
@@ -33,6 +34,9 @@ dependencies = [
 submit = [
     "httpx>=0.27",
 ]
+ml = [
+    "httpx>=0.27",
+]
 dev = [
     "pytest>=7.0",
     "pytest-cov>=4.0",
@@ -41,6 +45,7 @@ dev = [
 
 [project.scripts]
 digiphenoms-fhir = "digiphenoms_fhir.mapper:main"
+digiphenoms-ml = "digiphenoms_fhir.ml_client:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/digiphenoms_fhir"]

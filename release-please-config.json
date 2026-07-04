@@ -6,7 +6,13 @@
     "pipeline": {
       "release-type": "python",
       "package-name": "digiphenoms-fhir",
-      "component": "pipeline"
+      "component": "pipeline",
+      "extra-files": [
+        {
+          "type": "generic",
+          "path": "src/digiphenoms_fhir/__init__.py"
+        }
+      ]
     },
     "server": {
       "release-type": "maven",

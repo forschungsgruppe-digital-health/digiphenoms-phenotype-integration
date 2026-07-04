@@ -17,13 +17,19 @@ from digiphenoms_fhir.mapper import (
     TerminologyMap,
     build_bundle,
 )
+from digiphenoms_fhir.ml_client import (
+    MLServerClient,
+    MLServerError,
+)
 
-__version__ = "1.0.0"
+__version__ = "1.0.0"  # x-release-please-version
 
 __all__ = [
     "CohortSubmitClient",
     "CohortSubmitError",
     "FHIRMapper",
+    "MLServerClient",
+    "MLServerError",
     "MappingConfig",
     "Pipeline",
     "PipelineConfig",
