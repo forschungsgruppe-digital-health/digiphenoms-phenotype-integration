@@ -7,8 +7,13 @@ Konfigurationsgetriebene Pipeline zur Transformation klinischer CSV-Daten des **
 Das DigiPhenoMS-Projekt am Universitätsklinikum Carl Gustav Carus Dresden erfasst klinische Daten von MS-Patienten über verschiedene digitale Assessments. Diese Pipeline überführt die erhobenen CSV-Rohdaten in standardisierte FHIR-Ressourcen und stellt mit der `$cohort-submit`-Operation einen strukturierten Import in einen HAPI FHIR Server bereit — für Webanwendungen zur Visualisierung von Kohorten- und individuellen Patientenprofilen.
 
 ```
-CSV-Rohdaten → FHIR Mapping → Collection Bundle → $cohort-submit → HAPI FHIR Server → FHIR REST API
+CSV-Rohdaten ────────────────┐
+                             ├→ FHIR Mapping → Collection Bundle → $cohort-submit → HAPI FHIR Server → FHIR REST API
+ML-Server (synthetische ─────┘
+Daten, via Job-API)
 ```
+
+Neben realen CSV-Exporten kann die Pipeline synthetische Datensätze direkt vom **ML-Server** der Arbeitsgruppe beziehen (`--ml-dataset-job`); der HAPI FHIR Server stellt die ML-Job-Verwaltung zusätzlich als FHIR-Operationen (`$ml-train`, `$ml-synthesize`, `$ml-evaluate`, `$ml-job-status`) bereit — siehe [`docs/ml_server_api.md`](docs/ml_server_api.md).
 
 ### Erfasste klinische Instrumente
 
@@ -104,18 +109,23 @@ DigiPhenoMS/
 │   ├── src/digiphenoms_fhir/           # Python-Paket
 │   │   ├── __init__.py
 │   │   ├── mapper.py                   # Mapping-Engine (ResourceBuilder, Pipeline)
+│   │   ├── ml_client.py                # ML-Server-Client (digiphenoms-ml CLI)
 │   │   └── __main__.py                 # CLI-Einstiegspunkt
 │   ├── tests/                          # Pytest-Testsuite
 │   │   ├── fixtures/                   # Synthetische Testdaten (CSV)
 │   │   ├── test_resource_builder.py    # Unit-Tests für Ressourcen-Erzeugung
-│   │   └── test_pipeline.py            # Integrationstests
+│   │   ├── test_pipeline.py            # Integrationstests
+│   │   ├── test_ml_client.py           # ML-Server-Client-Tests
+│   │   └── test_cli.py                 # CLI-Regressionstests
 │   └── pyproject.toml                  # Python-Projektdefinition
-├── server/                             # $cohort-submit Spring Extension (JAR)
+├── server/                             # HAPI Spring Extension (JAR)
 │   ├── src/main/java/de/tud/fgdh/digiphenoms/fhir/
 │   │   ├── operations/
-│   │   │   └── CohortSubmitOperation.java  # $cohort-submit Provider
+│   │   │   ├── CohortSubmitOperation.java  # $cohort-submit Provider
+│   │   │   └── MlJobOperation.java         # $ml-* Provider (ML-Server-Jobs)
 │   │   ├── service/
 │   │   │   ├── CohortSubmitService.java    # 9-Stufen-Verarbeitungslogik
+│   │   │   ├── MlServerClient.java         # HTTP-Client für die ML-Job-API
 │   │   │   └── ImportStatistics.java       # Zähler für Import-Statistik
 │   │   └── config/
 │   │       └── FhirClientConfig.java       # FHIR-Client-Konfiguration
@@ -131,8 +141,10 @@ DigiPhenoMS/
 │   ├── data_schema_summary.md
 │   ├── fhir_mapping_concept.md
 │   ├── cohort_submit_specification.md
+│   ├── ml_server_api.md
 │   └── phenotyping_research.md
-├── .github/workflows/ci.yml           # GitHub Actions CI
+├── .github/workflows/                  # GitHub Actions (CI + Release Please)
+├── release-please-config.json          # Release-Automatisierung (Komponenten)
 └── LICENSE
 ```
 
@@ -152,6 +164,9 @@ pip install -e .
 
 # Mit Kohortenimport ($cohort-submit Client)
 pip install -e ".[submit]"
+
+# Mit ML-Server-Client (digiphenoms-ml)
+pip install -e ".[ml]"
 
 # Mit Entwicklungsabhängigkeiten (pytest, httpx)
 pip install -e ".[dev]"
@@ -191,6 +206,21 @@ digiphenoms-fhir --config config/ --data data/ --output output/
 
 # Nur bestimmte Schritte ausführen
 digiphenoms-fhir --config config/ --data data/ --output output/ --steps patient_profile lclat_summary
+```
+
+### Synthetische Daten vom ML-Server
+
+Voraussetzung: aktives SSH Port Forwarding und `API_AUTH_TOKEN` (siehe [`docs/ml_server_api.md`](docs/ml_server_api.md)).
+
+```bash
+# Jobs verwalten
+digiphenoms-ml synthesize --training-job <TRAINING_JOB_ID>
+digiphenoms-ml status <JOB_ID> --wait
+digiphenoms-ml download-dataset <SYNTHESE_JOB_ID> --output data/
+
+# Oder in einem Schritt: Datensatz laden, mappen und importieren
+digiphenoms-fhir --config config/ --data data/synthetic --output output/ \
+  --ml-dataset-job <SYNTHESE_JOB_ID> --submit --fhir-endpoint http://localhost:8080/fhir
 ```
 
 ### Pipeline als Python-Bibliothek
@@ -243,9 +273,9 @@ Kernkomponenten:
 - **`Pipeline`** — führt alle Schritte in Abhängigkeitsreihenfolge aus (topologische Sortierung)
 - **`TerminologyMap`** — übersetzt Quellcodes in SNOMED CT / LOINC / ICD-10 via ConceptMaps
 
-### HAPI FHIR Server + $cohort-submit
+### HAPI FHIR Server + benutzerdefinierte Operationen
 
-Die benutzerdefinierte Operation `$cohort-submit` wird als Thin-JAR-Extension gebaut und beim Start des offiziellen `hapiproject/hapi:v7.6.0`-Images über `loader.path=/app/extra-classes/` geladen. Wesentliche Merkmale:
+Die Extension (Java 21) wird als Thin JAR gebaut und beim Start des offiziellen `hapiproject/hapi:v8.10.0-2`-Images über `loader.path=/app/extra-classes/` geladen. Sie stellt `$cohort-submit` sowie die ML-Server-Operationen `$ml-train`, `$ml-synthesize`, `$ml-evaluate` und `$ml-job-status` bereit. Wesentliche Merkmale von `$cohort-submit`:
 
 - **Referenzielle Integrität** — dreistufige Verarbeitung (Patienten → Encounters → Observations/Reports) gemäß Ressourcen-Abhängigkeitsgraph
 - **Group-Hierarchie** — Wurzelgruppe (Kohorte) → Importgruppen (je Importvorgang) → Patientenreferenzen, für vollständige Nachvollziehbarkeit
@@ -285,7 +315,13 @@ mvn verify
 | [`docs/data_schema_summary.md`](docs/data_schema_summary.md)                 | Zusammenfassung aller 9 CSV-Datenschemata mit Spalten, Wertebereichen und Missing-Raten                                         |
 | [`docs/fhir_mapping_concept.md`](docs/fhir_mapping_concept.md)               | FHIR-Mapping-Konzept, Ressourcen-Zuordnung, Terminologie-Status                                                                 |
 | [`docs/cohort_submit_specification.md`](docs/cohort_submit_specification.md) | `$cohort-submit` Schnittstellenspezifikation — OperationDefinition, Import-Modi, Anwendungsfälle, Sequenz- und Klassendiagramme |
+| [`docs/ml_server_api.md`](docs/ml_server_api.md)                             | ML-Server API — SSH-Zugang, Job-Verwaltung, synthetische Daten, Integration in Pipeline und FHIR-Operationen                    |
 | [`docs/phenotyping_research.md`](docs/phenotyping_research.md)               | Literaturrecherche zu digitaler Phänotypisierung bei MS                                                                         |
+
+## Entwicklung und Releases
+
+- **Branches:** Entwicklung findet auf `dev` statt; `main` ist der Release-Branch. Feature-Branches werden per Pull Request nach `dev` gemergt, `dev` wird gesammelt nach `main` überführt.
+- **Commits:** [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, `test:`, `docs:`, …) mit optionalem Scope `(pipeline)` bzw. `(server)` — daraus generiert [Release Please](https://github.com/googleapis/release-please) auf `main` automatisch Release-PRs, Changelogs und Tags je Komponente (`pipeline-vX.Y.Z`, `server-vX.Y.Z`).
 
 ## Lizenz
 
