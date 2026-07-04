@@ -1,5 +1,5 @@
 # ---------- Stage 1: Build the extension JAR ----------
-FROM maven:3.9-eclipse-temurin-17 AS build
+FROM maven:3.9-eclipse-temurin-21 AS build
 WORKDIR /build
 
 # Cache dependencies first (layer caching)
@@ -14,7 +14,7 @@ RUN mvn package -DskipTests -B
 # The hapiproject/hapi image uses PropertiesLauncher with
 # loader.path=/app/extra-classes/ — JARs placed there are
 # automatically added to the classpath at startup.
-FROM hapiproject/hapi:v7.6.0
+FROM hapiproject/hapi:v8.10.0-2
 
 USER root
 COPY --from=build /build/target/digiphenoms-cohort-submit-*.jar /app/extra-classes/
