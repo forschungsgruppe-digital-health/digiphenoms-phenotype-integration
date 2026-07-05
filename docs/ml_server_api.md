@@ -19,21 +19,25 @@ Der ML-Server der DigiPhenoMS-Arbeitsgruppe erzeugt **synthetische Assessmentdat
 
 Der Proxy auf dem ML-Server ist sehr restriktiv — direkte HTTP-Verbindungen sind nicht möglich. Als Workaround wird ein lokales SSH Port Forwarding eingerichtet, sodass alle HTTP-Anfragen an `localhost` gesendet und von dort an den ML-Server weitergeleitet werden.
 
-Benötigte Zugangsdaten (bei der ML-Arbeitsgruppe erfragen):
+Benötigte Zugangsdaten (bei der ML-Arbeitsgruppe erfragen — Host-Adresse und Zugangsdaten werden **nicht** im Repository hinterlegt):
 
-- **Nutzername**
+- **Nutzername** → Umgebungsvariable `ML_SERVER_SSH_USER`
 - **Passwort**
+- **Host-Adresse des ML-Servers** → Umgebungsvariable `ML_SERVER_SSH_HOST`
 
-In einem separaten Terminal (offen lassen, `username` ersetzen):
+In einem separaten Terminal (offen lassen):
 
 ```bash
-ssh -L 8000:localhost:8000 username@<ml-server-host> -N
+export ML_SERVER_SSH_USER=<nutzername>
+export ML_SERVER_SSH_HOST=<ml-server-host>
+
+ssh -L 8000:localhost:8000 "$ML_SERVER_SSH_USER@$ML_SERVER_SSH_HOST" -N
 ```
 
 Der erste Port bestimmt, unter welchem lokalen Port die API erreichbar ist. Ist Port 8000 belegt, kann ein anderer verwendet werden — dann muss der Port in allen API-Aufrufen (bzw. in `ML_SERVER_URL`) angepasst werden:
 
 ```bash
-ssh -L 9000:localhost:8000 username@<ml-server-host> -N
+ssh -L 9000:localhost:8000 "$ML_SERVER_SSH_USER@$ML_SERVER_SSH_HOST" -N
 # API-Aufrufe dann gegen http://localhost:9000/...
 ```
 

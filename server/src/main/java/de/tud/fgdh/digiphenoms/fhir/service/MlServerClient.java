@@ -25,9 +25,10 @@ import java.time.Duration;
  * HTTP client for the DigiPhenoMS ML server job API (synthetic data generation).
  *
  * <p>The ML server sits behind a restrictive proxy and is reached through an SSH
- * port forwarding (default {@code http://localhost:8000}):</p>
+ * port forwarding (default {@code http://localhost:8000}). Host and credentials
+ * are provided by the ML team (see {@code docs/ml_server_api.md}):</p>
  *
- * <pre>ssh -L 8000:localhost:8000 &lt;username&gt;@<ml-server-host> -N</pre>
+ * <pre>ssh -L 8000:localhost:8000 "$ML_SERVER_SSH_USER@$ML_SERVER_SSH_HOST" -N</pre>
  *
  * <p>Documented endpoints (see {@code docs/ml_server_api.md}):</p>
  * <ul>
@@ -144,7 +145,8 @@ public class MlServerClient {
             throw new InternalErrorException(
                     "Connection to ML server at " + baseUrl + " failed: " + e.getMessage()
                             + ". Is the SSH port forwarding active? "
-                            + "(ssh -L 8000:localhost:8000 <username>@<ml-server-host> -N)", e);
+                            + "(ssh -L 8000:localhost:8000 <user>@<ml-server-host> -N, "
+                            + "see docs/ml_server_api.md)", e);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new InternalErrorException("Request to ML server was interrupted", e);

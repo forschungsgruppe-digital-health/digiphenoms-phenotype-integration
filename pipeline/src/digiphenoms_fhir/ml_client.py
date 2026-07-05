@@ -13,9 +13,10 @@ REST API (see ``docs/ml_server_api.md``):
     GET  /openapi.json            OpenAPI specification
 
 The ML server sits behind a restrictive proxy; requests are made against a
-local SSH port forwarding (default ``http://localhost:8000``):
+local SSH port forwarding (default ``http://localhost:8000``). Host and
+credentials are provided by the ML team (see docs/ml_server_api.md):
 
-    ssh -L 8000:localhost:8000 <username>@<ml-server-host> -N
+    ssh -L 8000:localhost:8000 "$ML_SERVER_SSH_USER@$ML_SERVER_SSH_HOST" -N
 
 Every request requires a Bearer token, taken from the ``API_AUTH_TOKEN``
 environment variable (or passed explicitly).
@@ -253,7 +254,8 @@ class MLServerClient:
             raise MLServerError(
                 f"Connection to {self.base_url} failed: {exc}. "
                 "Is the SSH port forwarding to the ML server running? "
-                "(ssh -L 8000:localhost:8000 <username>@<ml-server-host> -N)"
+                "(ssh -L 8000:localhost:8000 <user>@<ml-server-host> -N, "
+                "see docs/ml_server_api.md)"
             ) from exc
         except httpx.TimeoutException as exc:
             raise MLServerError(
