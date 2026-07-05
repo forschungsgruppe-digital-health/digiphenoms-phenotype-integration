@@ -103,6 +103,8 @@ steps:
 
 # Cohort submit — transmit mapped resources to HAPI FHIR server
 # Executed after all mapping steps complete successfully.
+# The endpoint can be overridden without touching this file via the
+# FHIR_BASE_URL environment variable or the --fhir-endpoint CLI flag.
 cohort_submit:
   enabled: false
   endpoint: "http://localhost:8080/fhir"
@@ -115,6 +117,8 @@ cohort_submit:
 # ML server — synthetic data job API (see docs/ml_server_api.md)
 # Reached through SSH port forwarding; the Bearer token is read from
 # the API_AUTH_TOKEN environment variable (never stored in config).
+# base_url and timeout are overridden by the ML_SERVER_URL and
+# ML_SERVER_TIMEOUT environment variables (and --ml-server-url).
 ml_server:
   base_url: "http://localhost:8000"
   timeout: 60                                  # seconds per request

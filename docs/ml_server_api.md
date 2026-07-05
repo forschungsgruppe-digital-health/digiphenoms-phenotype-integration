@@ -163,7 +163,7 @@ Weitere Unzulänglichkeiten der synthetischen Daten bitte an die ML-Arbeitsgrupp
 
 ### 7.1 `digiphenoms-ml` — Job-Verwaltung per CLI
 
-Installation: `pip install -e "pipeline[ml]"` (bzw. `[submit]` oder `[dev]`, enthalten jeweils `httpx`). Der Token kommt aus `$API_AUTH_TOKEN`, die Server-URL aus `$ML_SERVER_URL` (Standard: `http://localhost:8000`).
+Installation: `pip install -e "pipeline[ml]"` (bzw. `[submit]` oder `[dev]`, enthalten jeweils `httpx`). Der Token kommt aus `$API_AUTH_TOKEN`, die Server-URL aus `$ML_SERVER_URL` (Standard: `http://localhost:8000`), das Request-Timeout aus `$ML_SERVER_TIMEOUT` (Standard: 60 s).
 
 ```bash
 # Jobs starten
@@ -233,10 +233,11 @@ curl "http://localhost:8080/fhir/\$ml-job-status?jobId=f148e40c-ec8b-4f99-8de4-8
 
 **Konfiguration** (Umgebungsvariablen des FHIR-Servers):
 
-| Variable                             | Bedeutung                | Standard                |
-| ------------------------------------ | ------------------------ | ----------------------- |
-| `ML_SERVER_URL`                      | Basis-URL des ML-Servers | `http://localhost:8000` |
-| `ML_SERVER_TOKEN` / `API_AUTH_TOKEN` | Bearer-Token             | — (Pflicht)             |
+| Variable                             | Bedeutung                          | Standard                |
+| ------------------------------------ | ---------------------------------- | ----------------------- |
+| `ML_SERVER_URL`                      | Basis-URL des ML-Servers           | `http://localhost:8000` |
+| `ML_SERVER_TOKEN` / `API_AUTH_TOKEN` | Bearer-Token                       | — (Pflicht)             |
+| `ML_SERVER_TIMEOUT`                  | Timeout je Request in Sekunden     | `60`                    |
 
 Im Docker-Setup zeigt `ML_SERVER_URL` standardmäßig auf `http://host.docker.internal:8000`, da der SSH-Tunnel auf dem Docker-Host läuft (`extra_hosts: host-gateway` ist in `docker-compose.yml` gesetzt). Der Download der Artefakte erfolgt bewusst **nicht** über FHIR, sondern über die Python-Seite (`digiphenoms-ml download-dataset` bzw. `--ml-dataset-job`).
 

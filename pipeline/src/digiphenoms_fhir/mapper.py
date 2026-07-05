@@ -1318,7 +1318,7 @@ def main():
     parser.add_argument(
         "--fhir-endpoint",
         type=str,
-        help="HAPI FHIR server base URL (overrides config)",
+        help="HAPI FHIR server base URL (overrides $FHIR_BASE_URL and config)",
     )
     parser.add_argument(
         "--import-mode",
@@ -1376,12 +1376,18 @@ def main():
     if args.fhir_endpoint:
         pipeline.pipeline_cfg.cohort_submit["endpoint"] = args.fhir_endpoint
         pipeline.pipeline_cfg.cohort_submit.setdefault("enabled", True)
+    elif os.environ.get("FHIR_BASE_URL"):
+        pipeline.pipeline_cfg.cohort_submit["endpoint"] = os.environ["FHIR_BASE_URL"]
     if args.import_mode:
         pipeline.pipeline_cfg.cohort_submit["mode"] = args.import_mode
 
     # Fetch synthetic dataset from the ML server before mapping
     if args.ml_dataset_job:
-        from digiphenoms_fhir.ml_client import BASE_URL_ENV_VAR, MLServerClient
+        from digiphenoms_fhir.ml_client import (
+            BASE_URL_ENV_VAR,
+            TIMEOUT_ENV_VAR,
+            MLServerClient,
+        )
 
         ml_cfg = pipeline.pipeline_cfg.ml_server
         client = MLServerClient(
@@ -1390,7 +1396,10 @@ def main():
                 or os.environ.get(BASE_URL_ENV_VAR)
                 or ml_cfg.get("base_url")
             ),
-            timeout=ml_cfg.get("timeout", 60.0),
+            # env wins over pipeline.yaml; the client applies env/default when None
+            timeout=(
+                None if os.environ.get(TIMEOUT_ENV_VAR) else ml_cfg.get("timeout")
+            ),
         )
         if args.ml_wait:
             client.wait_for_job(

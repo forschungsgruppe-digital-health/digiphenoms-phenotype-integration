@@ -28,24 +28,31 @@ services:
         condition: service_healthy
     environment:
       SPRING_CONFIG_ADDITIONAL-LOCATION: file:///app/config/
-      DB_HOST: db
+      # DB_HOST may point at an external PostgreSQL; the in-network port of
+      # the bundled db service is always 5432 (DB_PORT in .env is only the
+      # host-exposed port of that service).
+      DB_HOST: ${DB_HOST:-db}
       DB_PORT: 5432
       DB_NAME: ${DB_NAME:-hapi}
       DB_USER: ${DB_USER:-hapi}
       DB_PASSWORD: ${DB_PASSWORD:-hapi}
-      SERVER_PORT: 8080
+      SERVER_PORT: ${SERVER_PORT:-8080}
+      # Public base URL written into FHIR responses — set when running
+      # behind a reverse proxy (defaults to http://localhost:<SERVER_PORT>/fhir)
+      FHIR_SERVER_ADDRESS: ${FHIR_SERVER_ADDRESS:-http://localhost:${SERVER_PORT:-8080}/fhir}
       # ML server ($ml-* operations) — the SSH port forwarding runs on the
       # Docker host, hence host.docker.internal instead of localhost.
       ML_SERVER_URL: ${ML_SERVER_URL:-http://host.docker.internal:8000}
+      ML_SERVER_TIMEOUT: ${ML_SERVER_TIMEOUT:-60}
       API_AUTH_TOKEN: ${API_AUTH_TOKEN:-}
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
       - ./hapi/application.yaml:/app/config/application.yaml:ro
     ports:
-      - "${FHIR_PORT:-8080}:8080"
+      - "${FHIR_PORT:-8080}:${SERVER_PORT:-8080}"
     healthcheck:
-      test: ["CMD-SHELL", "curl -sf http://localhost:8080/fhir/metadata || exit 1"]
+      test: ["CMD-SHELL", "curl -sf http://localhost:${SERVER_PORT:-8080}/fhir/metadata || exit 1"]
       interval: 15s
       timeout: 10s
       retries: 10
@@ -60,8 +67,11 @@ services:
       fhir-server:
         condition: service_healthy
     environment:
+      # Target for $cohort-submit (CLI env fallback for --fhir-endpoint)
+      FHIR_BASE_URL: ${FHIR_BASE_URL:-http://fhir-server:${SERVER_PORT:-8080}/fhir}
       # ML server access for --ml-dataset-job (tunnel runs on the Docker host)
       ML_SERVER_URL: ${ML_SERVER_URL:-http://host.docker.internal:8000}
+      ML_SERVER_TIMEOUT: ${ML_SERVER_TIMEOUT:-60}
       API_AUTH_TOKEN: ${API_AUTH_TOKEN:-}
     extra_hosts:
       - "host.docker.internal:host-gateway"
@@ -72,7 +82,6 @@ services:
         --config /app/config
         --data /data
         --submit
-        --fhir-endpoint http://fhir-server:8080/fhir
 
 volumes:
   pgdata:

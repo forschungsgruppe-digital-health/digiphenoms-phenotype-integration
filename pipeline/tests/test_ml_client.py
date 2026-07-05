@@ -85,6 +85,21 @@ class TestClientConfiguration:
         client = make_client(base_url="http://ml.test/")
         assert client.base_url == "http://ml.test"
 
+    def test_timeout_from_environment(self, monkeypatch):
+        monkeypatch.setenv("ML_SERVER_TIMEOUT", "120")
+        client = make_client()
+        assert client.timeout == 120.0
+
+    def test_timeout_param_beats_environment(self, monkeypatch):
+        monkeypatch.setenv("ML_SERVER_TIMEOUT", "120")
+        client = make_client(timeout=5.0)
+        assert client.timeout == 5.0
+
+    def test_invalid_timeout_env_falls_back_to_default(self, monkeypatch):
+        monkeypatch.setenv("ML_SERVER_TIMEOUT", "not-a-number")
+        client = make_client()
+        assert client.timeout == 60.0
+
 
 # ---------------------------------------------------------------------------
 # Job management

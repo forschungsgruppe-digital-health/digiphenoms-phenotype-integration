@@ -253,6 +253,24 @@ DATA_DIR=/pfad/zu/csv-daten docker compose run pipeline
 curl http://localhost:8080/fhir/metadata
 ```
 
+### Konfiguration per Umgebungsvariablen
+
+Sämtliche Infrastruktur-Endpunkte (Hosts, Ports, URLs) sind ohne Änderungen an Konfigurationsdateien über Umgebungsvariablen steuerbar (Vorlage: [`docker/.env.example`](docker/.env.example)):
+
+| Variable                                          | Komponente             | Standard                              | Beschreibung                                                      |
+| ------------------------------------------------- | ---------------------- | ------------------------------------- | ----------------------------------------------------------------- |
+| `FHIR_PORT`                                       | Compose                | `8080`                                | Host-Port, unter dem der FHIR-Server erreichbar ist               |
+| `SERVER_PORT`                                     | FHIR-Server            | `8080`                                | Container-interner Port des FHIR-Servers                          |
+| `FHIR_SERVER_ADDRESS`                             | FHIR-Server            | `http://localhost:<SERVER_PORT>/fhir` | Öffentliche Basis-URL in FHIR-Antworten (Reverse Proxy)           |
+| `FHIR_BASE_URL`                                   | Pipeline               | `pipeline.yaml`-Endpoint              | Ziel-Endpunkt für `$cohort-submit` (CLI-Flag hat Vorrang)         |
+| `DB_HOST` / `DB_NAME` / `DB_USER` / `DB_PASSWORD` | FHIR-Server            | `db` / `hapi` / `hapi` / `hapi`       | PostgreSQL-Verbindung (auch externe Datenbank möglich)            |
+| `DB_PORT`                                         | Compose                | `5432`                                | Host-Port der mitgelieferten PostgreSQL                           |
+| `DATA_DIR`                                        | Compose                | `./data`                              | Verzeichnis mit CSV-Eingabedaten (Host-Seite)                     |
+| `ML_SERVER_URL`                                   | Pipeline + FHIR-Server | `http://localhost:8000`               | ML-Server-Basis-URL (Compose: `http://host.docker.internal:8000`) |
+| `ML_SERVER_TIMEOUT`                               | Pipeline + FHIR-Server | `60`                                  | Timeout je ML-Server-Request in Sekunden                          |
+| `API_AUTH_TOKEN` (`ML_SERVER_TOKEN`)              | Pipeline + FHIR-Server | —                                     | Bearer-Token für die ML-Server-API (niemals committen)            |
+| `ML_SERVER_SSH_USER` / `ML_SERVER_SSH_HOST`       | SSH-Tunnel             | —                                     | Zugangsdaten für das Port Forwarding zum ML-Server                |
+
 ## Architektur
 
 Die Integration gliedert sich in zwei Phasen: **Mapping** (CSV → FHIR-Ressourcen) und **Import** (FHIR-Ressourcen → HAPI FHIR Server).

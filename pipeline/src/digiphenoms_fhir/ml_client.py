@@ -59,8 +59,10 @@ except ImportError:
 logger = logging.getLogger("digiphenoms.ml_client")
 
 DEFAULT_BASE_URL = "http://localhost:8000"
+DEFAULT_TIMEOUT = 60.0
 TOKEN_ENV_VAR = "API_AUTH_TOKEN"
 BASE_URL_ENV_VAR = "ML_SERVER_URL"
+TIMEOUT_ENV_VAR = "ML_SERVER_TIMEOUT"
 
 JOB_TYPES = ("training", "synthesis", "evaluation")
 
@@ -89,7 +91,8 @@ class MLServerClient:
         base_url: Server base URL. Defaults to ``$ML_SERVER_URL`` or
             ``http://localhost:8000`` (the SSH port forwarding target).
         token: Bearer token. Defaults to ``$API_AUTH_TOKEN``.
-        timeout: Per-request timeout in seconds.
+        timeout: Per-request timeout in seconds. Defaults to
+            ``$ML_SERVER_TIMEOUT`` or 60.
         verify_ssl: Verify TLS certificates.
     """
 
@@ -97,7 +100,7 @@ class MLServerClient:
         self,
         base_url: str | None = None,
         token: str | None = None,
-        timeout: float = 60.0,
+        timeout: float | None = None,
         verify_ssl: bool = True,
     ):
         if httpx is None:
@@ -114,6 +117,17 @@ class MLServerClient:
                 "ML server API token missing — set the "
                 f"{TOKEN_ENV_VAR} environment variable or pass token=..."
             )
+        if timeout is None:
+            try:
+                timeout = float(os.environ.get(TIMEOUT_ENV_VAR, DEFAULT_TIMEOUT))
+            except ValueError:
+                logger.warning(
+                    "Invalid %s value %r — using default %ss",
+                    TIMEOUT_ENV_VAR,
+                    os.environ.get(TIMEOUT_ENV_VAR),
+                    DEFAULT_TIMEOUT,
+                )
+                timeout = DEFAULT_TIMEOUT
         self.timeout = timeout
         self.verify_ssl = verify_ssl
 
@@ -363,8 +377,8 @@ def _add_common_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(
         "--timeout",
         type=float,
-        default=60.0,
-        help="Per-request timeout in seconds (default: 60)",
+        default=None,
+        help=f"Per-request timeout in seconds (default: ${TIMEOUT_ENV_VAR} or 60)",
     )
     parser.add_argument(
         "--insecure",

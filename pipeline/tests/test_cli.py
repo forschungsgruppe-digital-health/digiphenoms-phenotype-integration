@@ -86,6 +86,47 @@ class TestCliMapping:
             )
             mock_httpx.post.assert_not_called()
 
+    def test_fhir_base_url_env_fallback(self, monkeypatch, tmp_path, config_dir, fixtures_dir):
+        monkeypatch.setenv("FHIR_BASE_URL", "http://env-fhir:9000/fhir")
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {"resourceType": "Parameters", "parameter": []}
+
+        with patch("digiphenoms_fhir.mapper.httpx") as mock_httpx:
+            mock_httpx.post.return_value = mock_response
+            mock_httpx.ConnectError = Exception
+            mock_httpx.TimeoutException = Exception
+            run_cli(
+                monkeypatch,
+                "--config", str(config_dir),
+                "--data", str(fixtures_dir),
+                "--output", str(tmp_path / "out"),
+                "--submit",
+            )
+            url = mock_httpx.post.call_args.args[0]
+        assert url == "http://env-fhir:9000/fhir/$cohort-submit"
+
+    def test_fhir_endpoint_flag_beats_env(self, monkeypatch, tmp_path, config_dir, fixtures_dir):
+        monkeypatch.setenv("FHIR_BASE_URL", "http://env-fhir:9000/fhir")
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {"resourceType": "Parameters", "parameter": []}
+
+        with patch("digiphenoms_fhir.mapper.httpx") as mock_httpx:
+            mock_httpx.post.return_value = mock_response
+            mock_httpx.ConnectError = Exception
+            mock_httpx.TimeoutException = Exception
+            run_cli(
+                monkeypatch,
+                "--config", str(config_dir),
+                "--data", str(fixtures_dir),
+                "--output", str(tmp_path / "out"),
+                "--submit",
+                "--fhir-endpoint", "http://flag-fhir:8080/fhir",
+            )
+            url = mock_httpx.post.call_args.args[0]
+        assert url == "http://flag-fhir:8080/fhir/$cohort-submit"
+
 
 class TestCliMlIntegration:
     def test_ml_dataset_job_downloads_before_mapping(self, monkeypatch, tmp_path, config_dir):

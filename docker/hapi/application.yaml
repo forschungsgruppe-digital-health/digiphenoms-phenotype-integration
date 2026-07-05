@@ -6,7 +6,9 @@ hapi:
     fhir_version: R4
     # Scan extension package for @Component/@Service/@Configuration beans
     custom_bean_packages: de.tud.fgdh.digiphenoms.fhir
-    server_address: http://localhost:${SERVER_PORT:8080}/fhir
+    # Public base URL in FHIR responses — override via FHIR_SERVER_ADDRESS
+    # when running behind a reverse proxy / different hostname
+    server_address: ${FHIR_SERVER_ADDRESS:http://localhost:${SERVER_PORT:8080}/fhir}
     allow_external_references: true
     default_page_size: 50
     max_page_size: 200
@@ -32,7 +34,7 @@ ml:
   server:
     url: ${ML_SERVER_URL:http://localhost:8000}
     token: ${ML_SERVER_TOKEN:${API_AUTH_TOKEN:}}
-    timeout-seconds: 60
+    timeout-seconds: ${ML_SERVER_TIMEOUT:60}
 
 spring:
   datasource:
