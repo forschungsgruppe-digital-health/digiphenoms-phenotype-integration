@@ -2,6 +2,33 @@
 
 Der ML-Server der DigiPhenoMS-Arbeitsgruppe erzeugt **synthetische Assessmentdaten** auf Basis der realen Kohorte. Hinter dem Server steht ein **Job-Management**: Jedes Artefakt (Modell, synthetischer Datensatz, Evaluationsreport) ist einem Job und damit einer Job-ID zugeordnet. Diese Dokumentation beschreibt die API des Servers sowie ihre Integration in die DigiPhenoMS-Pipeline und den HAPI FHIR Server.
 
+## Überblick für Einsteiger: Wozu der ML-Server da ist
+
+Die echten DigiPhenoMS-Patientendaten sind schutzbedürftig und dürfen nicht frei weitergegeben werden — auch nicht an alle, die Software dafür entwickeln oder testen wollen. Der ML-Server löst genau dieses Problem: Er steht in einer geschützten Umgebung **bei den echten Daten**, lernt deren statistische Muster und erzeugt daraus **synthetische Daten** — künstliche Patient:innen, die sich statistisch wie die reale Kohorte verhalten, aber keiner echten Person entsprechen. Mit diesen Daten kann gefahrlos entwickelt, getestet und demonstriert werden.
+
+### Das Job-Modell
+
+Die Aufgaben des Servers dauern Minuten bis Stunden — Anfragen werden deshalb nicht sofort beantwortet, sondern als **Job** ausgeführt: Ein `POST /jobs` startet einen Job und liefert eine **Job-ID** zurück; die Arbeit läuft im Hintergrund. Über `GET /jobs/{id}` fragt man den Status ab, bis der Job abgeschlossen ist. Jedes Ergebnis (**Artefakt**) bleibt seinem Job zugeordnet — die Job-ID ist gewissermaßen der *Abholschein*, mit dem das Artefakt später heruntergeladen wird.
+
+### Die drei Job-Typen
+
+| Job-Typ        | `job_type`   | Eingabe                           | Aufgabe                                                                                       | Artefakt                         |
+| -------------- | ------------ | --------------------------------- | --------------------------------------------------------------------------------------------- | -------------------------------- |
+| **Training**   | `training`   | —                                 | Generatives Modell auf den echten Patiententabellen trainieren                                | Modell (**nicht** downloadbar)   |
+| **Synthese**   | `synthesis`  | `training_job_id`, `scale_factor` | Mit dem trainierten Modell einen künstlichen Datensatz erzeugen                               | Datensatz (ZIP mit CSV-Tabellen) |
+| **Evaluation** | `evaluation` | `synthesis_job_id`                | Qualität des synthetischen Datensatzes prüfen (statistische Treue, Nutzbarkeit, Privatsphäre) | Report (ZIP)                     |
+
+Anschaulich: Das **Training** ist wie ein Autor, der alle echten Fallakten liest, bis er neue, fiktive, aber realistische Akten schreiben kann. Das Modell selbst verlässt den geschützten Server **nie** — man erhält nur seine Job-ID, um darauf aufzubauen. Die **Synthese** lässt diesen Autor dann tatsächlich schreiben: `scale_factor` bestimmt die Größe des Ergebnisses (`1.0` ≈ Umfang des Originals, `2.0` doppelt so groß, `0.5` halb). Die **Evaluation** ist die Qualitätskontrolle: Wie originalgetreu ist der Datensatz, taugt er für Analysen, und verrät er nichts über echte Personen?
+
+Die Job-Typen bauen aufeinander auf — jede Stufe konsumiert die Job-ID der vorherigen:
+
+```text
+Training ──(training_job_id)──▶ Synthese ──(synthesis_job_id)──▶ Evaluation
+  Modell                          Datensatz (ZIP)                  Report (ZIP)
+```
+
+Für alle drei Stufen liegt auf dem Server bereits je ein abgeschlossener Beispiel-Job (siehe [Abschnitt 5](#5-bekannte-jobs-und-artefakte)) — den Datensatz des Synthese-Jobs kann man also sofort herunterladen, ohne selbst zu trainieren. Wie Pipeline, CLI und FHIR-Operationen diese Jobs ansteuern, zeigt [Abschnitt 7](#7-integration-cli-pipeline-und-fhir-operationen).
+
 ## Inhalt
 
 1. [Zugang: SSH Port Forwarding](#1-zugang-ssh-port-forwarding)
@@ -233,11 +260,11 @@ curl "http://localhost:8080/fhir/\$ml-job-status?jobId=f148e40c-ec8b-4f99-8de4-8
 
 **Konfiguration** (Umgebungsvariablen des FHIR-Servers):
 
-| Variable                             | Bedeutung                          | Standard                |
-| ------------------------------------ | ---------------------------------- | ----------------------- |
-| `ML_SERVER_URL`                      | Basis-URL des ML-Servers           | `http://localhost:8000` |
-| `ML_SERVER_TOKEN` / `API_AUTH_TOKEN` | Bearer-Token                       | — (Pflicht)             |
-| `ML_SERVER_TIMEOUT`                  | Timeout je Request in Sekunden     | `60`                    |
+| Variable                             | Bedeutung                      | Standard                |
+| ------------------------------------ | ------------------------------ | ----------------------- |
+| `ML_SERVER_URL`                      | Basis-URL des ML-Servers       | `http://localhost:8000` |
+| `ML_SERVER_TOKEN` / `API_AUTH_TOKEN` | Bearer-Token                   | — (Pflicht)             |
+| `ML_SERVER_TIMEOUT`                  | Timeout je Request in Sekunden | `60`                    |
 
 Im Docker-Setup zeigt `ML_SERVER_URL` standardmäßig auf `http://host.docker.internal:8000`, da der SSH-Tunnel auf dem Docker-Host läuft (`extra_hosts: host-gateway` ist in `docker-compose.yml` gesetzt). Der Download der Artefakte erfolgt bewusst **nicht** über FHIR, sondern über die Python-Seite (`digiphenoms-ml download-dataset` bzw. `--ml-dataset-job`).
 
