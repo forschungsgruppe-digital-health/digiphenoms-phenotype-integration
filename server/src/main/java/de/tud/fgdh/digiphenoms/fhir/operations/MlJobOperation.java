@@ -31,9 +31,9 @@ import java.math.BigDecimal;
  * artifacts are downloaded by the Python pipeline
  * ({@code digiphenoms-ml download-dataset}), not through FHIR.</p>
  *
- * <p>Registered automatically via Spring component scanning from the
- * {@code hapi.fhir.custom_bean_packages} configuration. Delegates all HTTP
- * communication to {@link MlServerClient}.</p>
+ * <p>Provided as a bean via the extension's Spring Boot auto-configuration
+ * and attached to the server through {@code hapi.fhir.custom_provider_classes}.
+ * Delegates all HTTP communication to {@link MlServerClient}.</p>
  */
 @Component
 public class MlJobOperation {

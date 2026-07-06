@@ -14,9 +14,9 @@ import org.springframework.stereotype.Component;
 /**
  * HAPI FHIR plain provider for the {@code $cohort-submit} system-level operation.
  *
- * <p>Registered automatically via Spring component scanning from the
- * {@code hapi.fhir.custom_bean_packages} configuration. Delegates all processing
- * to {@link CohortSubmitService}.</p>
+ * <p>Provided as a bean via the extension's Spring Boot auto-configuration
+ * and attached to the server through {@code hapi.fhir.custom_provider_classes}.
+ * Delegates all processing to {@link CohortSubmitService}.</p>
  *
  * @see <a href="https://digiphenoms.tu-dresden.de/fhir/OperationDefinition/cohort-submit">
  *      OperationDefinition</a>
