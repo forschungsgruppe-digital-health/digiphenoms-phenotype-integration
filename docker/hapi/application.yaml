@@ -4,12 +4,29 @@
 hapi:
   fhir:
     fhir_version: R4
-    # Scan extension package for @Component/@Service/@Configuration beans
-    custom_bean_packages: de.tud.fgdh.digiphenoms.fhir
-    server_address: http://localhost:${SERVER_PORT:8080}/fhir
+    # Attach the extension's operation providers to the RestfulServer.
+    # The beans themselves come from the extension JAR's Spring Boot
+    # auto-configuration (DigiphenomsAutoConfiguration).
+    custom_provider_classes:
+      - de.tud.fgdh.digiphenoms.fhir.operations.CohortSubmitOperation
+      - de.tud.fgdh.digiphenoms.fhir.operations.MlJobOperation
+    # Public base URL in FHIR responses — override via FHIR_SERVER_ADDRESS
+    # when running behind a reverse proxy / different hostname
+    server_address: ${FHIR_SERVER_ADDRESS:http://localhost:${SERVER_PORT:8080}/fhir}
     allow_external_references: true
+    # The pipeline data references pseudonymized externals that are never
+    # part of the import (assessor Practitioners, app-version Devices,
+    # managing Organization) — write-time integrity must not reject them.
+    enforce_referential_integrity_on_write: false
+    enforce_referential_integrity_on_delete: false
     default_page_size: 50
     max_page_size: 200
+    # CORS for browser clients (webapp demonstrator); the server only ever
+    # holds synthetic data in demo setups
+    cors:
+      allow_Credentials: false
+      allowed_origin:
+        - "*"
     narrative_enabled: false
     openapi_enabled: true
     bulk_export_enabled: false
@@ -24,6 +41,15 @@ hapi:
       logger_name: fhirtest.access
       log_exceptions: true
       error_format: "Path[${servletPath}] Source[${requestHeader.x-forwarded-for}] Operation[${operationType} ${operationName} ${idOrResourceName}] UA[${requestHeader.user-agent}] Params[${requestParameters}] ResponseEncoding[${responseEncodingNoDefault}]"
+
+# ML server (synthetic data job API) — used by the $ml-* FHIR operations.
+# The URL points at the SSH port forwarding towards the ML server; the
+# Bearer token is injected via environment variable (never committed).
+ml:
+  server:
+    url: ${ML_SERVER_URL:http://localhost:8000}
+    token: ${ML_SERVER_TOKEN:${API_AUTH_TOKEN:}}
+    timeout-seconds: ${ML_SERVER_TIMEOUT:60}
 
 spring:
   datasource:

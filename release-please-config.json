@@ -1,0 +1,24 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "include-component-in-tag": true,
+  "separate-pull-requests": false,
+  "packages": {
+    "pipeline": {
+      "release-type": "python",
+      "package-name": "digiphenoms-fhir",
+      "component": "pipeline",
+      "extra-files": [
+        {
+          "type": "generic",
+          "path": "src/digiphenoms_fhir/__init__.py"
+        }
+      ]
+    },
+    "server": {
+      "release-type": "maven",
+      "package-name": "digiphenoms-cohort-submit",
+      "component": "server",
+      "skip-snapshot": true
+    }
+  }
+}

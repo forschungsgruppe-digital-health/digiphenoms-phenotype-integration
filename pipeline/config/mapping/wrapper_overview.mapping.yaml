@@ -69,6 +69,18 @@ targets:
     # Deduplicate: same device may appear in multiple assessments
     deduplicate_by: "Vendor Identifier"
 
+    static_fields:
+      # deviceName.type and property.type are mandatory (R4B); the name and
+      # valueCode are filled from field_mappings below
+      deviceName:
+        - type: "other"
+      property:
+        - type:
+            coding:
+              - system: "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms"
+                code: "ios-version"
+                display: "iOS Version"
+
     field_mappings:
       - source: "Device Type"
         target: "type.text"

@@ -34,6 +34,7 @@ import hashlib
 import importlib
 import json
 import logging
+import os
 import re
 from dataclasses import dataclass
 from datetime import datetime
@@ -101,6 +102,8 @@ class PipelineConfig:
     steps: list[dict]
     default_organization: dict
     cohort_submit: dict
+    ml_server: dict
+    data_quality: dict
     raw: dict
 
     @classmethod
@@ -114,6 +117,8 @@ class PipelineConfig:
             steps=raw.get("pipeline", {}).get("steps", raw.get("steps", [])),
             default_organization=raw.get("default_organization", {}),
             cohort_submit=raw.get("cohort_submit", {}),
+            ml_server=raw.get("ml_server", {}),
+            data_quality=raw.get("data_quality", {}),
             raw=raw,
         )
 
@@ -179,6 +184,7 @@ class ResourceBuilder:
         self.pipeline_cfg = pipeline_cfg
         self.config_dir = config_dir
         self._terminology_cache: dict[str, TerminologyMap] = {}
+        self._fix_chronology = pipeline_cfg.data_quality.get("fix_chronology", True)
 
     # -- public API ----------------------------------------------------------
 
@@ -193,9 +199,9 @@ class ResourceBuilder:
             "resourceType": target["resource_type"],
         }
 
-        # Resource ID
-        resource["id"] = self._interpolate(
-            target.get("id_template", ""), row, extra_context
+        # Resource ID (sanitized to the FHIR id pattern [A-Za-z0-9\-.]{1,64})
+        resource["id"] = self._sanitize_id(
+            self._interpolate(target.get("id_template", ""), row, extra_context)
         )
 
         # Meta / profile
@@ -244,7 +250,9 @@ class ResourceBuilder:
         if "result_references" in target:
             resource["result"] = [
                 {
-                    "reference": self._interpolate(ref, row, extra_context),
+                    "reference": self._sanitize_reference(
+                        self._interpolate(ref, row, extra_context)
+                    ),
                 }
                 for ref in target["result_references"]
             ]
@@ -291,7 +299,11 @@ class ResourceBuilder:
                         continue
 
                 item = {}
-                if "linkId_source" in items_cfg:
+                if "linkId_template" in items_cfg:
+                    item["linkId"] = self._interpolate(
+                        items_cfg["linkId_template"], row
+                    )
+                elif "linkId_source" in items_cfg:
                     item["linkId"] = str(row.get(items_cfg["linkId_source"], ""))
                 if "text_source" in items_cfg:
                     text = row.get(items_cfg["text_source"])
@@ -354,6 +366,27 @@ class ResourceBuilder:
             return None
         return val
 
+    @staticmethod
+    def _sanitize_id(value: str) -> str:
+        """Normalize a string to a valid FHIR resource id.
+
+        FHIR R4B ids must match ``[A-Za-z0-9\\-.]{1,64}`` — source values
+        (e.g. Neuro-QoL subtest keys like ``upper_limbs`` or arbitrary
+        patient UUIDs from synthetic datasets) may contain other characters,
+        which HAPI rejects on import.
+        """
+        if not value:
+            return value
+        return re.sub(r"[^A-Za-z0-9\-.]", "-", str(value))[:64]
+
+    @classmethod
+    def _sanitize_reference(cls, reference: str) -> str:
+        """Sanitize the id part of a ``ResourceType/id`` literal reference."""
+        if "/" in reference:
+            ref_type, ref_id = reference.split("/", 1)
+            return f"{ref_type}/{cls._sanitize_id(ref_id)}"
+        return reference
+
     def _build_static(self, key: str, value: Any) -> Any:
         """Build a static field value (handles nested dicts for CodeableConcept etc.)."""
         if isinstance(value, dict) and "system" in value and "code" in value:
@@ -402,7 +435,11 @@ class ResourceBuilder:
                 ref_id = fm["id_template"].replace("{value}", str(val))
             else:
                 ref_id = str(val)
-            self._set_nested(resource, target, {"reference": f"{ref_type}/{ref_id}"})
+            self._set_nested(
+                resource,
+                target,
+                {"reference": f"{ref_type}/{self._sanitize_id(ref_id)}"},
+            )
 
         elif ftype == "datetime":
             fmt = fm.get("format")
@@ -545,7 +582,14 @@ class ResourceBuilder:
         Applies pre-validation cleanup (empty strings, structural fixes) before
         passing through the ``fhir.resources.R4B`` pydantic model.  Returns the
         validated dict, or the original dict with a warning on failure.
+
+        The dump uses ``mode="json"`` so every value is JSON-native (datetimes
+        as FHIR strings, decimals as numbers) — resources must survive
+        ``json.dumps`` without custom encoders for bundle files and for the
+        ``$cohort-submit`` HTTP body.
         """
+        if self._fix_chronology:
+            self._fix_period_chronology(resource_dict)
         self._cleanup_resource(resource_dict)
         resource_type = resource_dict.get("resourceType", "")
         try:
@@ -554,10 +598,45 @@ class ResourceBuilder:
             )
             model_cls = getattr(mod, resource_type)
             model = model_cls.model_validate(resource_dict)
-            return model.model_dump(exclude_none=True)
+            return model.model_dump(mode="json", exclude_none=True)
         except Exception as exc:
             logger.warning("FHIR model validation for %s: %s", resource_type, exc)
             return resource_dict
+
+    @staticmethod
+    def _fix_period_chronology(resource: dict) -> None:
+        """Swap inverted ``start``/``end`` pairs in Period-like structures.
+
+        The synthetic datasets from the ML server do not guarantee
+        chronological timestamps (an assessment's end may precede its
+        start). FHIR requires ``Period.start <= Period.end`` (invariant
+        per-1), so inverted pairs are swapped in place. Controlled by
+        ``data_quality.fix_chronology`` in pipeline.yaml (default: on).
+        """
+
+        def _walk(obj: Any) -> None:
+            if isinstance(obj, dict):
+                start, end = obj.get("start"), obj.get("end")
+                if isinstance(start, str) and isinstance(end, str):
+                    try:
+                        if datetime.fromisoformat(end) < datetime.fromisoformat(start):
+                            obj["start"], obj["end"] = end, start
+                            logger.warning(
+                                "Swapped inverted period (%s > %s) in %s/%s",
+                                start,
+                                end,
+                                resource.get("resourceType", "?"),
+                                resource.get("id", "?"),
+                            )
+                    except (ValueError, TypeError):
+                        pass
+                for v in obj.values():
+                    _walk(v)
+            elif isinstance(obj, list):
+                for item in obj:
+                    _walk(item)
+
+        _walk(resource)
 
     @staticmethod
     def _cleanup_resource(resource: dict) -> None:
@@ -609,7 +688,8 @@ class ResourceBuilder:
                             extras = coding_entry.pop("additional_codings", None)
                             # Also handle nested 'coding' within a coding entry
                             nested = coding_entry.pop("coding", None)
-                            flattened.append(coding_entry)
+                            if coding_entry:  # skip husks emptied by the pops
+                                flattened.append(coding_entry)
                             if extras and isinstance(extras, list):
                                 flattened.extend(extras)
                             if nested and isinstance(nested, list):
@@ -655,6 +735,32 @@ class ResourceBuilder:
             val = resource.get(field_name)
             if isinstance(val, str) and re.match(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$", val):
                 resource[field_name] = val + "+00:00"
+
+        # --- Device: drop entries whose mapped value was missing ------------
+        # Static fields pre-seed deviceName[].type / property[].type (both
+        # mandatory in R4B); if the CSV row had no name/value the husk entry
+        # would fail validation.
+        if resource.get("resourceType") == "Device":
+            names = resource.get("deviceName")
+            if isinstance(names, list):
+                kept = [n for n in names if isinstance(n, dict) and n.get("name")]
+                if kept:
+                    resource["deviceName"] = kept
+                else:
+                    resource.pop("deviceName", None)
+            props = resource.get("property")
+            if isinstance(props, list):
+                kept = [
+                    p
+                    for p in props
+                    if isinstance(p, dict)
+                    and p.get("type")
+                    and (p.get("valueQuantity") or p.get("valueCode"))
+                ]
+                if kept:
+                    resource["property"] = kept
+                else:
+                    resource.pop("property", None)
 
         # --- QuestionnaireResponse.identifier: list → single (R4B: 0..1) -----
         rt = resource.get("resourceType")
@@ -1217,13 +1323,41 @@ def main():
     parser.add_argument(
         "--fhir-endpoint",
         type=str,
-        help="HAPI FHIR server base URL (overrides config)",
+        help="HAPI FHIR server base URL (overrides $FHIR_BASE_URL and config)",
     )
     parser.add_argument(
         "--import-mode",
         type=str,
         choices=["merge", "distinct"],
         help="Import mode for cohort submission (overrides config)",
+    )
+    parser.add_argument(
+        "--ml-dataset-job",
+        type=str,
+        metavar="SYNTHESIS_JOB_ID",
+        help=(
+            "Download the synthetic dataset of this ML server synthesis job "
+            "into the data directory before mapping (token: $API_AUTH_TOKEN)"
+        ),
+    )
+    parser.add_argument(
+        "--ml-server-url",
+        type=str,
+        help=(
+            "ML server base URL (default: $ML_SERVER_URL, then "
+            "pipeline.yaml ml_server.base_url, then http://localhost:8000)"
+        ),
+    )
+    parser.add_argument(
+        "--ml-wait",
+        action="store_true",
+        help="Wait for the ML synthesis job to finish before downloading",
+    )
+    parser.add_argument(
+        "--ml-poll-interval",
+        type=float,
+        default=10.0,
+        help="Polling interval in seconds for --ml-wait (default: 10)",
     )
     args = parser.parse_args()
 
@@ -1247,8 +1381,45 @@ def main():
     if args.fhir_endpoint:
         pipeline.pipeline_cfg.cohort_submit["endpoint"] = args.fhir_endpoint
         pipeline.pipeline_cfg.cohort_submit.setdefault("enabled", True)
+    elif os.environ.get("FHIR_BASE_URL"):
+        pipeline.pipeline_cfg.cohort_submit["endpoint"] = os.environ["FHIR_BASE_URL"]
     if args.import_mode:
         pipeline.pipeline_cfg.cohort_submit["mode"] = args.import_mode
+
+    # Fetch synthetic dataset from the ML server before mapping
+    if args.ml_dataset_job:
+        from digiphenoms_fhir.ml_client import (
+            BASE_URL_ENV_VAR,
+            TIMEOUT_ENV_VAR,
+            MLServerClient,
+        )
+
+        ml_cfg = pipeline.pipeline_cfg.ml_server
+        client = MLServerClient(
+            base_url=(
+                args.ml_server_url
+                or os.environ.get(BASE_URL_ENV_VAR)
+                or ml_cfg.get("base_url")
+            ),
+            # env wins over pipeline.yaml; the client applies env/default when None
+            timeout=(
+                None if os.environ.get(TIMEOUT_ENV_VAR) else ml_cfg.get("timeout")
+            ),
+        )
+        if args.ml_wait:
+            client.wait_for_job(
+                args.ml_dataset_job,
+                poll_interval=args.ml_poll_interval,
+                timeout=ml_cfg.get("wait_timeout", 3600.0),
+            )
+        data_path = Path(args.data)
+        data_path.mkdir(parents=True, exist_ok=True)
+        files = client.download_dataset(args.ml_dataset_job, data_path)
+        logger.info(
+            "Fetched %d dataset file(s) from ML server job %s",
+            len(files),
+            args.ml_dataset_job,
+        )
 
     results = pipeline.run(data_dir=args.data, output_dir=args.output)
 
