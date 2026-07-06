@@ -22,7 +22,7 @@ from digiphenoms_fhir.ml_client import (
     MLServerError,
 )
 
-__version__ = "1.0.0"  # x-release-please-version
+__version__ = "1.1.0"  # x-release-please-version
 
 __all__ = [
     "CohortSubmitClient",
