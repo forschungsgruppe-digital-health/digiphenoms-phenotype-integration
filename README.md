@@ -130,6 +130,10 @@ DigiPhenoMS/
 │   │   └── config/
 │   │       └── FhirClientConfig.java       # FHIR-Client-Konfiguration
 │   └── pom.xml                             # Maven-Projektdefinition (Thin JAR)
+├── webapp/                             # Demonstrator (Vue 3, GitHub Pages)
+│   ├── src/                            # App: Kohorte, Patientendetail, ML-Mock
+│   ├── public/demo-data/               # Gebündelte synthetische FHIR-Ressourcen
+│   └── scripts/generate_demo_data.py   # Demo-Daten aus Pipeline-Fixtures erzeugen
 ├── docker/                             # Container-Deployment
 │   ├── docker-compose.yml              # HAPI + PostgreSQL + Pipeline
 │   ├── hapi/
@@ -252,6 +256,26 @@ DATA_DIR=/pfad/zu/csv-daten docker compose run pipeline
 # Server-Status prüfen
 curl http://localhost:8080/fhir/metadata
 ```
+
+### Demonstrator (Webapp)
+
+Der Vue-Demonstrator ([`webapp/`](webapp/)) visualisiert die Kohorte
+(KPIs, Patientenliste, Score-Verläufe je Instrument, MRT-Volumetrie) und
+den — **gemockten** — ML-Server-Workflow. Er zeigt **ausschließlich
+synthetische Daten**: standardmäßig ein gebündeltes Demo-Bundle aus den
+Pipeline-Fixtures, optional live von einem HAPI FHIR Server.
+
+```bash
+cd webapp
+npm install
+npm run dev                 # http://localhost:5173
+
+# an den lokalen HAPI-Server anbinden (nur synthetische Daten!)
+open "http://localhost:5173/?fhir=http://localhost:8080/fhir"
+```
+
+Deployment über GitHub Pages: `.github/workflows/pages.yml` (Details:
+[`webapp/README.md`](webapp/README.md)).
 
 ### Konfiguration per Umgebungsvariablen
 

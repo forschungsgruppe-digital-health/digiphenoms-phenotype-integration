@@ -39,5 +39,8 @@ server/target/
 *.jar
 !server/pom.xml
 
+# Node / webapp
+node_modules/
+
 # Docker
 docker/.env

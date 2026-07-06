@@ -1,0 +1,20 @@
+{
+  "name": "digiphenoms-demonstrator",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "DigiPhenoMS Demonstrator — synthetic-data FHIR cohort viewer (Vue 3)",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "demo-data": "python3 scripts/generate_demo_data.py"
+  },
+  "dependencies": {
+    "vue": "^3.5.13"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.0",
+    "vite": "^7.0.0"
+  }
+}

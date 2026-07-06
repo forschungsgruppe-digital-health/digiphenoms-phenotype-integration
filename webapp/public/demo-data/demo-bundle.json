@@ -1,0 +1,3752 @@
+{
+  "resourceType": "Bundle",
+  "type": "collection",
+  "entry": [
+    {
+      "resource": {
+        "resourceType": "Patient",
+        "id": "pat-abc-1001",
+        "meta": {
+          "lastUpdated": "2022-01-10T09:00:00Z",
+          "profile": [
+            "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-Patient"
+          ]
+        },
+        "extension": [
+          {
+            "url": "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/handedness",
+            "valueCode": "right"
+          }
+        ],
+        "identifier": [
+          {
+            "system": "urn:oid:2.16.840.1.113883.3.digiphenoms.patient",
+            "value": "abc-1001"
+          }
+        ],
+        "gender": "female",
+        "birthDate": "1985-06-01",
+        "communication": [
+          {
+            "language": {
+              "coding": [
+                {
+                  "system": "urn:ietf:bcp:47",
+                  "code": "de"
+                }
+              ]
+            }
+          }
+        ],
+        "managingOrganization": {
+          "display": "Dresden Carus"
+        }
+      },
+      "fullUrl": "urn:uuid:930016424ea339aa57941bbd342b260b"
+    },
+    {
+      "resource": {
+        "resourceType": "Patient",
+        "id": "pat-abc-1002",
+        "meta": {
+          "lastUpdated": "2022-01-11T10:30:00Z",
+          "profile": [
+            "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-Patient"
+          ]
+        },
+        "extension": [
+          {
+            "url": "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/handedness",
+            "valueCode": "left"
+          }
+        ],
+        "identifier": [
+          {
+            "system": "urn:oid:2.16.840.1.113883.3.digiphenoms.patient",
+            "value": "abc-1002"
+          }
+        ],
+        "gender": "male",
+        "birthDate": "1978-11-01",
+        "communication": [
+          {
+            "language": {
+              "coding": [
+                {
+                  "system": "urn:ietf:bcp:47",
+                  "code": "de"
+                }
+              ]
+            }
+          }
+        ],
+        "managingOrganization": {
+          "display": "Dresden Carus"
+        }
+      },
+      "fullUrl": "urn:uuid:cac12f441a2cf946cb4fa68149387c08"
+    },
+    {
+      "resource": {
+        "resourceType": "Patient",
+        "id": "pat-abc-1003",
+        "meta": {
+          "lastUpdated": "2022-01-12T08:15:00Z",
+          "profile": [
+            "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-Patient"
+          ]
+        },
+        "extension": [
+          {
+            "url": "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/handedness",
+            "valueCode": "right"
+          }
+        ],
+        "identifier": [
+          {
+            "system": "urn:oid:2.16.840.1.113883.3.digiphenoms.patient",
+            "value": "abc-1003"
+          }
+        ],
+        "gender": "female",
+        "birthDate": "1992-03-01",
+        "communication": [
+          {
+            "language": {
+              "coding": [
+                {
+                  "system": "urn:ietf:bcp:47",
+                  "code": "de"
+                }
+              ]
+            }
+          }
+        ],
+        "managingOrganization": {
+          "display": "Dresden Carus"
+        }
+      },
+      "fullUrl": "urn:uuid:627c923847d9e60744d1a63ae0e0f38b"
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-ms-abc-1001",
+        "meta": {
+          "profile": [
+            "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-MSCondition"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "urn:oid:2.16.840.1.113883.3.digiphenoms.patient",
+            "value": "cond-ms-abc-1001"
+          }
+        ],
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                "code": "encounter-diagnosis"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "24700007",
+              "display": "Multiple sclerosis"
+            }
+          ],
+          "text": "Multiple sclerosis"
+        },
+        "subject": {
+          "reference": "Patient/pat-abc-1001"
+        },
+        "onsetDateTime": "2018-03-15"
+      },
+      "fullUrl": "urn:uuid:be5bd6f1eac160dc3b2f94d067759619"
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-ms-abc-1002",
+        "meta": {
+          "profile": [
+            "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-MSCondition"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "urn:oid:2.16.840.1.113883.3.digiphenoms.patient",
+            "value": "cond-ms-abc-1002"
+          }
+        ],
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                "code": "encounter-diagnosis"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "24700007",
+              "display": "Multiple sclerosis"
+            }
+          ],
+          "text": "Multiple sclerosis"
+        },
+        "subject": {
+          "reference": "Patient/pat-abc-1002"
+        },
+        "onsetDateTime": "2015-07-22"
+      },
+      "fullUrl": "urn:uuid:9c08eceb2e191a1279e5e445bc7bbc15"
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-ms-abc-1003",
+        "meta": {
+          "profile": [
+            "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-MSCondition"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "urn:oid:2.16.840.1.113883.3.digiphenoms.patient",
+            "value": "cond-ms-abc-1003"
+          }
+        ],
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                "code": "encounter-diagnosis"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "24700007",
+              "display": "Multiple sclerosis"
+            }
+          ],
+          "text": "Multiple sclerosis"
+        },
+        "subject": {
+          "reference": "Patient/pat-abc-1003"
+        },
+        "onsetDateTime": "2021-01-05"
+      },
+      "fullUrl": "urn:uuid:b07c239bc617c9aee2aaf4ff1a8b6d64"
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-comorbid-abc-1001-0",
+        "meta": {
+          "profile": [
+            "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-Comorbidity"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "urn:oid:2.16.840.1.113883.3.digiphenoms.patient",
+            "value": "cond-comorbid-abc-1001-0"
+          }
+        ],
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                "code": "problem-list-item"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "35489007",
+              "display": "Depressive disorder"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/pat-abc-1001"
+        }
+      },
+      "fullUrl": "urn:uuid:b7097cc2d1501f1b88a1c8da03f71857"
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-comorbid-abc-1001-1",
+        "meta": {
+          "profile": [
+            "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-Comorbidity"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "urn:oid:2.16.840.1.113883.3.digiphenoms.patient",
+            "value": "cond-comorbid-abc-1001-1"
+          }
+        ],
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                "code": "problem-list-item"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "38341003",
+              "display": "Hypertensive disorder"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/pat-abc-1001"
+        }
+      },
+      "fullUrl": "urn:uuid:ffe00b5ca6bf172fc80e7b37027d3efc"
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-comorbid-abc-1002-0",
+        "meta": {
+          "profile": [
+            "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-Comorbidity"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "urn:oid:2.16.840.1.113883.3.digiphenoms.patient",
+            "value": "cond-comorbid-abc-1002-0"
+          }
+        ],
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                "code": "problem-list-item"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "73211009",
+              "display": "Diabetes mellitus"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/pat-abc-1002"
+        }
+      },
+      "fullUrl": "urn:uuid:e037345ed727e368f6ffb714721377f2"
+    },
+    {
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "enc-assess-2001",
+        "meta": {
+          "profile": [
+            "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-Encounter"
+          ]
+        },
+        "extension": [
+          {
+            "url": "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/successful-module-count",
+            "valueInteger": 5
+          }
+        ],
+        "identifier": [
+          {
+            "system": "urn:oid:2.16.840.1.113883.3.digiphenoms.assessment",
+            "value": "assess-2001"
+          }
+        ],
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "AMB",
+          "display": "ambulatory"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                "code": "mspt-assessment",
+                "display": "MSPT Assessment Session"
+              }
+            ],
+            "text": "MSPT Assessment Session"
+          }
+        ],
+        "subject": {
+          "reference": "Patient/pat-abc-1001"
+        },
+        "participant": [
+          {
+            "individual": {
+              "reference": "Practitioner/pract-assessor-01"
+            }
+          }
+        ],
+        "period": {
+          "start": "2022-03-14T08:00:00Z",
+          "end": "2022-03-14T09:30:00Z"
+        },
+        "serviceProvider": {
+          "display": "Dresden Carus"
+        }
+      },
+      "fullUrl": "urn:uuid:b8ce2588f516e2cfeafe2fb631e35491"
+    },
+    {
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "enc-assess-2002",
+        "meta": {
+          "profile": [
+            "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-Encounter"
+          ]
+        },
+        "extension": [
+          {
+            "url": "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/successful-module-count",
+            "valueInteger": 4
+          }
+        ],
+        "identifier": [
+          {
+            "system": "urn:oid:2.16.840.1.113883.3.digiphenoms.assessment",
+            "value": "assess-2002"
+          }
+        ],
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "AMB",
+          "display": "ambulatory"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                "code": "mspt-assessment",
+                "display": "MSPT Assessment Session"
+              }
+            ],
+            "text": "MSPT Assessment Session"
+          }
+        ],
+        "subject": {
+          "reference": "Patient/pat-abc-1002"
+        },
+        "participant": [
+          {
+            "individual": {
+              "reference": "Practitioner/pract-assessor-02"
+            }
+          }
+        ],
+        "period": {
+          "start": "2022-03-15T10:00:00Z",
+          "end": "2022-03-15T11:00:00Z"
+        },
+        "serviceProvider": {
+          "display": "Dresden Carus"
+        }
+      },
+      "fullUrl": "urn:uuid:6966c8af7ec77339fa70c0210f28477a"
+    },
+    {
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "enc-assess-2003",
+        "meta": {
+          "profile": [
+            "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-Encounter"
+          ]
+        },
+        "extension": [
+          {
+            "url": "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/successful-module-count",
+            "valueInteger": 5
+          }
+        ],
+        "identifier": [
+          {
+            "system": "urn:oid:2.16.840.1.113883.3.digiphenoms.assessment",
+            "value": "assess-2003"
+          }
+        ],
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "AMB",
+          "display": "ambulatory"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                "code": "mspt-assessment",
+                "display": "MSPT Assessment Session"
+              }
+            ],
+            "text": "MSPT Assessment Session"
+          }
+        ],
+        "subject": {
+          "reference": "Patient/pat-abc-1003"
+        },
+        "participant": [
+          {
+            "individual": {
+              "reference": "Practitioner/pract-assessor-01"
+            }
+          }
+        ],
+        "period": {
+          "start": "2022-03-16T14:00:00Z",
+          "end": "2022-03-16T15:15:00Z"
+        },
+        "serviceProvider": {
+          "display": "Dresden Carus"
+        }
+      },
+      "fullUrl": "urn:uuid:b559113438cf2cdbaf83068659dbe0b1"
+    },
+    {
+      "resource": {
+        "resourceType": "Device",
+        "id": "device-device-vendor-001",
+        "meta": {
+          "profile": [
+            "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-Device"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "urn:oid:2.16.840.1.113883.3.digiphenoms.module",
+            "value": "device-vendor-001"
+          }
+        ],
+        "deviceName": [
+          {
+            "name": "iPad Pro",
+            "type": "other"
+          }
+        ],
+        "type": {
+          "text": "iPad"
+        },
+        "version": [
+          {
+            "value": "2.1.0"
+          }
+        ],
+        "property": [
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "ios-version",
+                  "display": "iOS Version"
+                }
+              ]
+            },
+            "valueCode": [
+              {
+                "text": "15.4"
+              }
+            ]
+          }
+        ]
+      },
+      "fullUrl": "urn:uuid:aab64df486f217e769f3c11ed4090ca3"
+    },
+    {
+      "resource": {
+        "resourceType": "Device",
+        "id": "device-device-vendor-002",
+        "meta": {
+          "profile": [
+            "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-Device"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "urn:oid:2.16.840.1.113883.3.digiphenoms.module",
+            "value": "device-vendor-002"
+          }
+        ],
+        "deviceName": [
+          {
+            "name": "iPad Air",
+            "type": "other"
+          }
+        ],
+        "type": {
+          "text": "iPad"
+        },
+        "version": [
+          {
+            "value": "2.1.0"
+          }
+        ],
+        "property": [
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "ios-version",
+                  "display": "iOS Version"
+                }
+              ]
+            },
+            "valueCode": [
+              {
+                "text": "15.4"
+              }
+            ]
+          }
+        ]
+      },
+      "fullUrl": "urn:uuid:d748fba2712aa487cf61a201d0f38dc5"
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-lcla-assess-2001-mod-lcla-001",
+        "meta": {
+          "profile": [
+            "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-LCLA"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "urn:oid:2.16.840.1.113883.3.digiphenoms.module",
+            "value": "obs-lcla-assess-2001-mod-lcla-001"
+          }
+        ],
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "exam",
+                "display": "Exam"
+              }
+            ],
+            "text": "Exam"
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+              "code": "lcla-test",
+              "display": "Low-Contrast Letter Acuity Test (LCLA)"
+            },
+            {
+              "system": "http://snomed.info/sct",
+              "code": "251686008",
+              "display": "Contrast sensitivity"
+            }
+          ],
+          "text": "Low-Contrast Letter Acuity Test (LCLA)"
+        },
+        "subject": {
+          "reference": "Patient/pat-abc-1001"
+        },
+        "encounter": {
+          "reference": "Encounter/enc-assess-2001"
+        },
+        "effectiveDateTime": "2022-03-14T08:05:00Z",
+        "performer": [
+          {
+            "reference": "Practitioner/pract-assessor-01"
+          }
+        ],
+        "device": {
+          "reference": "Device/device-app-0.0.45"
+        },
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "lclat-total-correct",
+                  "display": "LCLA Total Number Correct"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 78.0,
+              "unit": "{score}",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "lclat-correct-100pct",
+                  "display": "LCLA Correct at 100% Contrast"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 52.0,
+              "unit": "{score}",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "lclat-correct-2.5pct",
+                  "display": "LCLA Correct at 2.5% Contrast"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 26.0,
+              "unit": "{score}",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "module-duration",
+                  "display": "Module Duration"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 900.0,
+              "unit": "s",
+              "system": "http://unitsofmeasure.org"
+            }
+          }
+        ]
+      },
+      "fullUrl": "urn:uuid:e6897b8dbfcf4eb4214e9103ad92bf64"
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-lcla-assess-2002-mod-lcla-002",
+        "meta": {
+          "profile": [
+            "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-LCLA"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "urn:oid:2.16.840.1.113883.3.digiphenoms.module",
+            "value": "obs-lcla-assess-2002-mod-lcla-002"
+          }
+        ],
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "exam",
+                "display": "Exam"
+              }
+            ],
+            "text": "Exam"
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+              "code": "lcla-test",
+              "display": "Low-Contrast Letter Acuity Test (LCLA)"
+            }
+          ],
+          "text": "Low-Contrast Letter Acuity Test (LCLA)"
+        },
+        "subject": {
+          "reference": "Patient/pat-abc-1002"
+        },
+        "encounter": {
+          "reference": "Encounter/enc-assess-2002"
+        },
+        "effectiveDateTime": "2022-03-15T10:05:00Z",
+        "performer": [
+          {
+            "reference": "Practitioner/pract-assessor-02"
+          }
+        ],
+        "device": {
+          "reference": "Device/device-app-0.0.45"
+        },
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "lclat-total-correct",
+                  "display": "LCLA Total Number Correct"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 65.0,
+              "unit": "{score}",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "lclat-correct-100pct",
+                  "display": "LCLA Correct at 100% Contrast"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 45.0,
+              "unit": "{score}",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "lclat-correct-2.5pct",
+                  "display": "LCLA Correct at 2.5% Contrast"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 20.0,
+              "unit": "{score}",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "module-duration",
+                  "display": "Module Duration"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 780.0,
+              "unit": "s",
+              "system": "http://unitsofmeasure.org"
+            }
+          }
+        ]
+      },
+      "fullUrl": "urn:uuid:1a1980efccbc538bd03ca053462076cc"
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-lcla-assess-2003-mod-lcla-003",
+        "meta": {
+          "profile": [
+            "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-LCLA"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "urn:oid:2.16.840.1.113883.3.digiphenoms.module",
+            "value": "obs-lcla-assess-2003-mod-lcla-003"
+          }
+        ],
+        "status": "cancelled",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "exam",
+                "display": "Exam"
+              }
+            ],
+            "text": "Exam"
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+              "code": "lcla-test",
+              "display": "Low-Contrast Letter Acuity Test (LCLA)"
+            }
+          ],
+          "text": "Low-Contrast Letter Acuity Test (LCLA)"
+        },
+        "subject": {
+          "reference": "Patient/pat-abc-1003"
+        },
+        "encounter": {
+          "reference": "Encounter/enc-assess-2003"
+        },
+        "effectiveDateTime": "2022-03-16T14:05:00Z",
+        "performer": [
+          {
+            "reference": "Practitioner/pract-assessor-01"
+          }
+        ],
+        "note": [
+          {
+            "text": "incomplete-unable-to-complete"
+          }
+        ],
+        "device": {
+          "reference": "Device/device-app-0.0.45"
+        },
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "module-duration",
+                  "display": "Module Duration"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 300.0,
+              "unit": "s",
+              "system": "http://unitsofmeasure.org"
+            }
+          }
+        ]
+      },
+      "fullUrl": "urn:uuid:67e523ccb6aeca7ae665d33ab0c9192d"
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-9hpt-assess-2001-mod-mdt-001",
+        "meta": {
+          "profile": [
+            "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-9HPT"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "urn:oid:2.16.840.1.113883.3.digiphenoms.module",
+            "value": "obs-9hpt-assess-2001-mod-mdt-001"
+          }
+        ],
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "exam",
+                "display": "Exam"
+              }
+            ],
+            "text": "Exam"
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "83141-2",
+              "display": "9-Hole Pegboard Dexterity Test"
+            },
+            {
+              "system": "http://snomed.info/sct",
+              "code": "273648008",
+              "display": "Nine hole peg test"
+            }
+          ],
+          "text": "9-Hole Pegboard Dexterity Test"
+        },
+        "subject": {
+          "reference": "Patient/pat-abc-1001"
+        },
+        "encounter": {
+          "reference": "Encounter/enc-assess-2001"
+        },
+        "effectiveDateTime": "2022-03-14T08:25:00Z",
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "9hpt-zscore-dominant",
+                  "display": "9HPT Z-Score Dominant Hand"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": -0.5,
+              "unit": "{z-score}",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "9hpt-zscore-nondominant",
+                  "display": "9HPT Z-Score Nondominant Hand"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 0.3,
+              "unit": "{z-score}",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "9hpt-left-hand-time",
+                  "display": "9HPT Left Hand Time"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 22.4,
+              "unit": "s",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "9hpt-right-hand-time",
+                  "display": "9HPT Right Hand Time"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 19.8,
+              "unit": "s",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "dominant-hand",
+                  "display": "Dominant Hand"
+                }
+              ]
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "",
+                  "code": "right",
+                  "display": "right"
+                }
+              ]
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "9hpt-pegs-dropped",
+                  "display": "Pegs Dropped"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 0.0,
+              "unit": "{count}",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "trial-duration",
+                  "display": "Trial Duration"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 19.8,
+              "unit": "s",
+              "system": "http://unitsofmeasure.org"
+            }
+          }
+        ]
+      },
+      "fullUrl": "urn:uuid:08fb60fe50d9840bc69b2ffcc680237e"
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-9hpt-assess-2002-mod-mdt-002",
+        "meta": {
+          "profile": [
+            "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-9HPT"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "urn:oid:2.16.840.1.113883.3.digiphenoms.module",
+            "value": "obs-9hpt-assess-2002-mod-mdt-002"
+          }
+        ],
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "exam",
+                "display": "Exam"
+              }
+            ],
+            "text": "Exam"
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "83141-2",
+              "display": "9-Hole Pegboard Dexterity Test"
+            }
+          ],
+          "text": "9-Hole Pegboard Dexterity Test"
+        },
+        "subject": {
+          "reference": "Patient/pat-abc-1002"
+        },
+        "encounter": {
+          "reference": "Encounter/enc-assess-2002"
+        },
+        "effectiveDateTime": "2022-03-15T10:25:00Z",
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "9hpt-zscore-dominant",
+                  "display": "9HPT Z-Score Dominant Hand"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": -1.2,
+              "unit": "{z-score}",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "9hpt-zscore-nondominant",
+                  "display": "9HPT Z-Score Nondominant Hand"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": -0.8,
+              "unit": "{z-score}",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "9hpt-left-hand-time",
+                  "display": "9HPT Left Hand Time"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 28.1,
+              "unit": "s",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "9hpt-right-hand-time",
+                  "display": "9HPT Right Hand Time"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 30.5,
+              "unit": "s",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "dominant-hand",
+                  "display": "Dominant Hand"
+                }
+              ]
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "",
+                  "code": "left",
+                  "display": "left"
+                }
+              ]
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "9hpt-pegs-dropped",
+                  "display": "Pegs Dropped"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 1.0,
+              "unit": "{count}",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "trial-duration",
+                  "display": "Trial Duration"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 28.1,
+              "unit": "s",
+              "system": "http://unitsofmeasure.org"
+            }
+          }
+        ]
+      },
+      "fullUrl": "urn:uuid:ff14f14f79272f0bce2ebebcbb56839f"
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-sdmt-assess-2001-mod-npst-001",
+        "meta": {
+          "profile": [
+            "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-SDMT"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "urn:oid:2.16.840.1.113883.3.digiphenoms.module",
+            "value": "obs-sdmt-assess-2001-mod-npst-001"
+          }
+        ],
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "exam",
+                "display": "Exam"
+              }
+            ],
+            "text": "Exam"
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+              "code": "sdmt-test",
+              "display": "Symbol Digit Modalities Test (SDMT)"
+            },
+            {
+              "system": "http://snomed.info/sct",
+              "code": "273857000",
+              "display": "Symbol digit modalities test"
+            }
+          ],
+          "text": "Symbol Digit Modalities Test (SDMT)"
+        },
+        "subject": {
+          "reference": "Patient/pat-abc-1001"
+        },
+        "encounter": {
+          "reference": "Encounter/enc-assess-2001"
+        },
+        "effectiveDateTime": "2022-03-14T08:45:00Z",
+        "valueQuantity": {
+          "value": 48.0,
+          "unit": "{score}",
+          "system": "http://unitsofmeasure.org"
+        },
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "sdmt-total-incorrect",
+                  "display": "SDMT Total Number Incorrect"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 7.0,
+              "unit": "{score}",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "sdmt-zscore",
+                  "display": "SDMT Z-Score"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 0.2,
+              "unit": "{z-score}",
+              "system": "http://unitsofmeasure.org"
+            }
+          }
+        ]
+      },
+      "fullUrl": "urn:uuid:2039c8979342cd104a0680547a95851e"
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-sdmt-assess-2002-mod-npst-002",
+        "meta": {
+          "profile": [
+            "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-SDMT"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "urn:oid:2.16.840.1.113883.3.digiphenoms.module",
+            "value": "obs-sdmt-assess-2002-mod-npst-002"
+          }
+        ],
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "exam",
+                "display": "Exam"
+              }
+            ],
+            "text": "Exam"
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+              "code": "sdmt-test",
+              "display": "Symbol Digit Modalities Test (SDMT)"
+            }
+          ],
+          "text": "Symbol Digit Modalities Test (SDMT)"
+        },
+        "subject": {
+          "reference": "Patient/pat-abc-1002"
+        },
+        "encounter": {
+          "reference": "Encounter/enc-assess-2002"
+        },
+        "effectiveDateTime": "2022-03-15T10:40:00Z",
+        "valueQuantity": {
+          "value": 35.0,
+          "unit": "{score}",
+          "system": "http://unitsofmeasure.org"
+        },
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "sdmt-total-incorrect",
+                  "display": "SDMT Total Number Incorrect"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 12.0,
+              "unit": "{score}",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "sdmt-zscore",
+                  "display": "SDMT Z-Score"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": -1.1,
+              "unit": "{z-score}",
+              "system": "http://unitsofmeasure.org"
+            }
+          }
+        ]
+      },
+      "fullUrl": "urn:uuid:ff0d34ada61386ad9d28da383d6da21f"
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-t25fw-assess-2001-mod-wst-001",
+        "meta": {
+          "profile": [
+            "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-T25FW"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "urn:oid:2.16.840.1.113883.3.digiphenoms.module",
+            "value": "obs-t25fw-assess-2001-mod-wst-001"
+          }
+        ],
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "exam",
+                "display": "Exam"
+              }
+            ],
+            "text": "Exam"
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+              "code": "t25fw-test",
+              "display": "Timed 25-Foot Walk (T25FW)"
+            },
+            {
+              "system": "http://snomed.info/sct",
+              "code": "724237005",
+              "display": "Gait speed"
+            }
+          ],
+          "text": "Timed 25-Foot Walk (T25FW)"
+        },
+        "subject": {
+          "reference": "Patient/pat-abc-1001"
+        },
+        "encounter": {
+          "reference": "Encounter/enc-assess-2001"
+        },
+        "effectiveDateTime": "2022-03-14T09:05:00Z",
+        "valueQuantity": {
+          "value": 5.8,
+          "unit": "s",
+          "system": "http://unitsofmeasure.org"
+        },
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "t25fw-zscore",
+                  "display": "T25FW Z-Score"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 0.1,
+              "unit": "{z-score}",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "walking-aid-used",
+                  "display": "Walking Aid Used"
+                }
+              ]
+            },
+            "valueBoolean": false
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "afo-used",
+                  "display": "Ankle-Foot Orthosis Used"
+                }
+              ]
+            },
+            "valueBoolean": false
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "successful-trials",
+                  "display": "Successful Walking Trials"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 2.0,
+              "unit": "{count}",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "unsuccessful-trials",
+                  "display": "Unsuccessful Walking Trials"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 0.0,
+              "unit": "{count}",
+              "system": "http://unitsofmeasure.org"
+            }
+          }
+        ]
+      },
+      "fullUrl": "urn:uuid:fb820fff37b83c5bca68ce5fa64b5556"
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-t25fw-assess-2002-mod-wst-002",
+        "meta": {
+          "profile": [
+            "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-T25FW"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "urn:oid:2.16.840.1.113883.3.digiphenoms.module",
+            "value": "obs-t25fw-assess-2002-mod-wst-002"
+          }
+        ],
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "exam",
+                "display": "Exam"
+              }
+            ],
+            "text": "Exam"
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+              "code": "t25fw-test",
+              "display": "Timed 25-Foot Walk (T25FW)"
+            }
+          ],
+          "text": "Timed 25-Foot Walk (T25FW)"
+        },
+        "subject": {
+          "reference": "Patient/pat-abc-1002"
+        },
+        "encounter": {
+          "reference": "Encounter/enc-assess-2002"
+        },
+        "effectiveDateTime": "2022-03-15T10:55:00Z",
+        "valueQuantity": {
+          "value": 8.3,
+          "unit": "s",
+          "system": "http://unitsofmeasure.org"
+        },
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "t25fw-zscore",
+                  "display": "T25FW Z-Score"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": -1.5,
+              "unit": "{z-score}",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "walking-aid-used",
+                  "display": "Walking Aid Used"
+                }
+              ]
+            },
+            "valueBoolean": true
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "walking-aid-choice",
+                  "display": "Walking Aid Choice"
+                }
+              ]
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "",
+                  "code": "cane",
+                  "display": "cane"
+                }
+              ]
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "afo-used",
+                  "display": "Ankle-Foot Orthosis Used"
+                }
+              ]
+            },
+            "valueBoolean": true
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "afo-choice",
+                  "display": "AFO Side (right/left/both)"
+                }
+              ]
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "",
+                  "code": "rechts",
+                  "display": "rechts"
+                }
+              ]
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "successful-trials",
+                  "display": "Successful Walking Trials"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 2.0,
+              "unit": "{count}",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "unsuccessful-trials",
+                  "display": "Unsuccessful Walking Trials"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 1.0,
+              "unit": "{count}",
+              "system": "http://unitsofmeasure.org"
+            }
+          }
+        ]
+      },
+      "fullUrl": "urn:uuid:4324bdc0b9621de3c7da9bc681bd6b57"
+    },
+    {
+      "resource": {
+        "resourceType": "QuestionnaireResponse",
+        "id": "qr-nq-assess-2001-sleep",
+        "meta": {
+          "profile": [
+            "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-NeuroQoL"
+          ]
+        },
+        "identifier": {
+          "system": "urn:oid:2.16.840.1.113883.3.digiphenoms.module",
+          "value": "qr-nq-assess-2001-sleep"
+        },
+        "questionnaire": "https://digiphenoms.tu-dresden.de/fhir/Questionnaire/neuro-qol",
+        "status": "completed",
+        "subject": {
+          "reference": "Patient/pat-abc-1001"
+        },
+        "encounter": {
+          "reference": "Encounter/enc-assess-2001"
+        },
+        "authored": "2022-03-14T08:06:30Z",
+        "item": [
+          {
+            "linkId": "sleep-0",
+            "text": "In den vergangenen 4 Tagen hatte ich Schwierigkeiten einzuschlafen",
+            "answer": [
+              {
+                "valueInteger": 4
+              }
+            ]
+          },
+          {
+            "linkId": "sleep-1",
+            "text": "In den vergangenen 4 Tagen war ich tagsüber müde",
+            "answer": [
+              {
+                "valueInteger": 2
+              }
+            ]
+          }
+        ]
+      },
+      "fullUrl": "urn:uuid:5a14b87ba14c7bdb580a0860081596be"
+    },
+    {
+      "resource": {
+        "resourceType": "QuestionnaireResponse",
+        "id": "qr-nq-assess-2001-upper-limbs",
+        "meta": {
+          "profile": [
+            "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-NeuroQoL"
+          ]
+        },
+        "identifier": {
+          "system": "urn:oid:2.16.840.1.113883.3.digiphenoms.module",
+          "value": "qr-nq-assess-2001-upper-limbs"
+        },
+        "questionnaire": "https://digiphenoms.tu-dresden.de/fhir/Questionnaire/neuro-qol",
+        "status": "completed",
+        "subject": {
+          "reference": "Patient/pat-abc-1001"
+        },
+        "encounter": {
+          "reference": "Encounter/enc-assess-2001"
+        },
+        "authored": "2022-03-14T08:06:00Z",
+        "item": [
+          {
+            "linkId": "upper_limbs-0",
+            "text": "Können Sie ein Glas Nutella öffnen?",
+            "answer": [
+              {
+                "valueInteger": 3
+              }
+            ]
+          },
+          {
+            "linkId": "upper_limbs-1",
+            "text": "Sind Sie in der Lage den Reißverschluss zu schließen?",
+            "answer": [
+              {
+                "valueInteger": 3
+              }
+            ]
+          },
+          {
+            "linkId": "upper_limbs-2",
+            "text": "Können Sie sich einen Pullover anziehen?",
+            "answer": [
+              {
+                "valueInteger": 4
+              }
+            ]
+          }
+        ]
+      },
+      "fullUrl": "urn:uuid:ac7592a07c785fc7c34f6cbc0a41a729"
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-nq-assess-2001-sleep",
+        "meta": {
+          "profile": [
+            "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-NeuroQoL-Score"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "urn:oid:2.16.840.1.113883.3.digiphenoms.module",
+            "value": "obs-nq-assess-2001-sleep"
+          }
+        ],
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "survey",
+                "display": "Survey"
+              }
+            ],
+            "text": "Survey"
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+              "code": "neuro-qol-tscore",
+              "display": "Neuro-QoL T-Score"
+            },
+            {
+              "system": "http://loinc.org",
+              "code": "67908-4",
+              "display": "Neuro-Qol short form - sleep disturbance - version 1.0"
+            }
+          ],
+          "text": "Neuro-QoL T-Score"
+        },
+        "subject": {
+          "reference": "Patient/pat-abc-1001"
+        },
+        "encounter": {
+          "reference": "Encounter/enc-assess-2001"
+        },
+        "effectiveDateTime": "2022-03-14T08:07:00Z",
+        "valueQuantity": {
+          "value": 58.1,
+          "unit": "{T-score}",
+          "system": "http://unitsofmeasure.org"
+        },
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "standard-error",
+                  "display": "Standard Error"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 2.8,
+              "unit": "{T-score}",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "raw-score",
+                  "display": "Raw Score"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 15.0,
+              "unit": "{score}",
+              "system": "http://unitsofmeasure.org"
+            }
+          }
+        ]
+      },
+      "fullUrl": "urn:uuid:436e71402c52a0f45f052872869df765"
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-nq-assess-2001-upper-limbs",
+        "meta": {
+          "profile": [
+            "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-NeuroQoL-Score"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "urn:oid:2.16.840.1.113883.3.digiphenoms.module",
+            "value": "obs-nq-assess-2001-upper-limbs"
+          }
+        ],
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "survey",
+                "display": "Survey"
+              }
+            ],
+            "text": "Survey"
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+              "code": "neuro-qol-tscore",
+              "display": "Neuro-QoL T-Score"
+            },
+            {
+              "system": "http://loinc.org",
+              "code": "upper_limbs",
+              "display": "upper_limbs"
+            }
+          ],
+          "text": "Neuro-QoL T-Score"
+        },
+        "subject": {
+          "reference": "Patient/pat-abc-1001"
+        },
+        "encounter": {
+          "reference": "Encounter/enc-assess-2001"
+        },
+        "effectiveDateTime": "2022-03-14T08:06:30Z",
+        "valueQuantity": {
+          "value": 42.5,
+          "unit": "{T-score}",
+          "system": "http://unitsofmeasure.org"
+        },
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "standard-error",
+                  "display": "Standard Error"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 3.2,
+              "unit": "{T-score}",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "raw-score",
+                  "display": "Raw Score"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 8.0,
+              "unit": "{score}",
+              "system": "http://unitsofmeasure.org"
+            }
+          }
+        ]
+      },
+      "fullUrl": "urn:uuid:e7477cd0fcc8e50eb01194827fa0a0ac"
+    },
+    {
+      "resource": {
+        "resourceType": "QuestionnaireResponse",
+        "id": "qr-mh-assess-2001-mod-mh-001",
+        "meta": {
+          "profile": [
+            "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-MedicalHistory"
+          ]
+        },
+        "identifier": {
+          "system": "urn:oid:2.16.840.1.113883.3.digiphenoms.module",
+          "value": "qr-mh-assess-2001-mod-mh-001"
+        },
+        "questionnaire": "https://digiphenoms.tu-dresden.de/fhir/Questionnaire/medical-history",
+        "status": "completed",
+        "subject": {
+          "reference": "Patient/pat-abc-1001"
+        },
+        "encounter": {
+          "reference": "Encounter/enc-assess-2001"
+        },
+        "authored": "2022-03-14T08:00:00Z",
+        "item": [
+          {
+            "linkId": "education_duration",
+            "text": "Bitte geben Sie die Anzahl Jahre Ihrer Schulzeit an.",
+            "answer": [
+              {
+                "valueString": "9"
+              }
+            ]
+          },
+          {
+            "linkId": "relapses",
+            "text": "Bitten geben Sie die Anzahl Schübe seit dem letzten Termin an.",
+            "answer": [
+              {
+                "valueString": "0"
+              }
+            ]
+          },
+          {
+            "linkId": "relationship",
+            "text": "Geben Sie Ihrne aktuellen Beziehungsstatus an.",
+            "answer": [
+              {
+                "valueString": "married"
+              }
+            ]
+          },
+          {
+            "linkId": "medication_confirmation",
+            "text": "Nehmen Sie eines der folgenden Medikamente?"
+          }
+        ]
+      },
+      "fullUrl": "urn:uuid:b40dcdab2c3ad1fa8a050083cfb615db"
+    },
+    {
+      "resource": {
+        "resourceType": "DiagnosticReport",
+        "id": "diag-mri-abc-1001-2022-03-01",
+        "meta": {
+          "profile": [
+            "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-MRI-Report"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "urn:oid:2.16.840.1.113883.3.digiphenoms.patient",
+            "value": "diag-mri-abc-1001-2022-03-01"
+          }
+        ],
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/v2-0074",
+                "code": "RAD",
+                "display": "Radiology"
+              }
+            ],
+            "text": "Radiology"
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "30799-1",
+              "display": "MR Brain WO contrast"
+            },
+            {
+              "system": "http://snomed.info/sct",
+              "code": "698354004",
+              "display": "Magnetic resonance imaging for measurement of brain volume"
+            }
+          ],
+          "text": "MR Brain WO contrast"
+        },
+        "subject": {
+          "reference": "Patient/pat-abc-1001"
+        },
+        "effectiveDateTime": "2022-03-01",
+        "result": [
+          {
+            "reference": "Observation/obs-mri-atrophy-abc-1001-2022-03-01"
+          },
+          {
+            "reference": "Observation/obs-mri-lesions-abc-1001-2022-03-01"
+          },
+          {
+            "reference": "Observation/obs-mri-tissue-abc-1001-2022-03-01"
+          },
+          {
+            "reference": "Observation/obs-mri-thalamus-abc-1001-2022-03-01"
+          }
+        ]
+      },
+      "fullUrl": "urn:uuid:dacabcc41c5e96245f0c3a59692c6114"
+    },
+    {
+      "resource": {
+        "resourceType": "DiagnosticReport",
+        "id": "diag-mri-abc-1001-2023-01-05",
+        "meta": {
+          "profile": [
+            "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-MRI-Report"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "urn:oid:2.16.840.1.113883.3.digiphenoms.patient",
+            "value": "diag-mri-abc-1001-2023-01-05"
+          }
+        ],
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/v2-0074",
+                "code": "RAD",
+                "display": "Radiology"
+              }
+            ],
+            "text": "Radiology"
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "30799-1",
+              "display": "MR Brain WO contrast"
+            }
+          ],
+          "text": "MR Brain WO contrast"
+        },
+        "subject": {
+          "reference": "Patient/pat-abc-1001"
+        },
+        "effectiveDateTime": "2023-01-05",
+        "result": [
+          {
+            "reference": "Observation/obs-mri-atrophy-abc-1001-2023-01-05"
+          },
+          {
+            "reference": "Observation/obs-mri-lesions-abc-1001-2023-01-05"
+          },
+          {
+            "reference": "Observation/obs-mri-tissue-abc-1001-2023-01-05"
+          },
+          {
+            "reference": "Observation/obs-mri-thalamus-abc-1001-2023-01-05"
+          }
+        ]
+      },
+      "fullUrl": "urn:uuid:a37cdf011ef11aa4bab559766ca82b45"
+    },
+    {
+      "resource": {
+        "resourceType": "DiagnosticReport",
+        "id": "diag-mri-abc-1002-2022-03-08",
+        "meta": {
+          "profile": [
+            "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-MRI-Report"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "urn:oid:2.16.840.1.113883.3.digiphenoms.patient",
+            "value": "diag-mri-abc-1002-2022-03-08"
+          }
+        ],
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/v2-0074",
+                "code": "RAD",
+                "display": "Radiology"
+              }
+            ],
+            "text": "Radiology"
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "30799-1",
+              "display": "MR Brain WO contrast"
+            }
+          ],
+          "text": "MR Brain WO contrast"
+        },
+        "subject": {
+          "reference": "Patient/pat-abc-1002"
+        },
+        "effectiveDateTime": "2022-03-08",
+        "result": [
+          {
+            "reference": "Observation/obs-mri-atrophy-abc-1002-2022-03-08"
+          },
+          {
+            "reference": "Observation/obs-mri-lesions-abc-1002-2022-03-08"
+          },
+          {
+            "reference": "Observation/obs-mri-tissue-abc-1002-2022-03-08"
+          },
+          {
+            "reference": "Observation/obs-mri-thalamus-abc-1002-2022-03-08"
+          }
+        ],
+        "conclusion": "Segmentation QC: PASS",
+        "conclusionCode": [
+          {
+            "text": "lesions_confirmed"
+          }
+        ]
+      },
+      "fullUrl": "urn:uuid:9eeb209a2359f2e5a8074c5b29a38d16"
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-mri-atrophy-abc-1001-2022-03-01",
+        "meta": {
+          "profile": [
+            "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-MRI-Atrophy"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "urn:oid:2.16.840.1.113883.3.digiphenoms.module",
+            "value": "obs-mri-atrophy-abc-1001-2022-03-01"
+          }
+        ],
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "imaging"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+              "code": "mri-brain-atrophy",
+              "display": "Brain Atrophy Measures"
+            },
+            {
+              "system": "http://snomed.info/sct",
+              "code": "278849000",
+              "display": "Cerebral atrophy"
+            }
+          ],
+          "text": "Brain Atrophy Measures"
+        },
+        "subject": {
+          "reference": "Patient/pat-abc-1001"
+        },
+        "effectiveDateTime": "2022-03-01",
+        "bodySite": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "12738006",
+              "display": "Brain structure"
+            }
+          ],
+          "text": "Brain structure"
+        },
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "bpf",
+                  "display": "Brain Parenchymal Fraction"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 0.78,
+              "unit": "{ratio}",
+              "system": "http://unitsofmeasure.org"
+            }
+          }
+        ]
+      },
+      "fullUrl": "urn:uuid:f06a18cc494b9633ee2d05e0719d24ed"
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-mri-atrophy-abc-1001-2023-01-05",
+        "meta": {
+          "profile": [
+            "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-MRI-Atrophy"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "urn:oid:2.16.840.1.113883.3.digiphenoms.module",
+            "value": "obs-mri-atrophy-abc-1001-2023-01-05"
+          }
+        ],
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "imaging"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+              "code": "mri-brain-atrophy",
+              "display": "Brain Atrophy Measures"
+            }
+          ],
+          "text": "Brain Atrophy Measures"
+        },
+        "subject": {
+          "reference": "Patient/pat-abc-1001"
+        },
+        "effectiveDateTime": "2023-01-05",
+        "bodySite": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "12738006",
+              "display": "Brain structure"
+            }
+          ],
+          "text": "Brain structure"
+        },
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "bpf",
+                  "display": "Brain Parenchymal Fraction"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 0.82,
+              "unit": "{ratio}",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "bpf-change",
+                  "display": "BPF Change from Previous"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": -2.13,
+              "unit": "{ratio}",
+              "system": "http://unitsofmeasure.org"
+            }
+          }
+        ]
+      },
+      "fullUrl": "urn:uuid:4bc92d28b068f1758fd734466ce02b69"
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-mri-atrophy-abc-1002-2022-03-08",
+        "meta": {
+          "profile": [
+            "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-MRI-Atrophy"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "urn:oid:2.16.840.1.113883.3.digiphenoms.module",
+            "value": "obs-mri-atrophy-abc-1002-2022-03-08"
+          }
+        ],
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "imaging"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+              "code": "mri-brain-atrophy",
+              "display": "Brain Atrophy Measures"
+            }
+          ],
+          "text": "Brain Atrophy Measures"
+        },
+        "subject": {
+          "reference": "Patient/pat-abc-1002"
+        },
+        "effectiveDateTime": "2022-03-08",
+        "bodySite": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "12738006",
+              "display": "Brain structure"
+            }
+          ],
+          "text": "Brain structure"
+        },
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "bpf",
+                  "display": "Brain Parenchymal Fraction"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 0.72,
+              "unit": "{ratio}",
+              "system": "http://unitsofmeasure.org"
+            }
+          }
+        ]
+      },
+      "fullUrl": "urn:uuid:7dc85cd351431d2ae421f76db7f3f44e"
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-mri-lesions-abc-1001-2022-03-01",
+        "meta": {
+          "profile": [
+            "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-MRI-Lesions"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "urn:oid:2.16.840.1.113883.3.digiphenoms.module",
+            "value": "obs-mri-lesions-abc-1001-2022-03-01"
+          }
+        ],
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "imaging"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+              "code": "mri-t2-lesions",
+              "display": "T2 Lesion Measures"
+            },
+            {
+              "system": "http://snomed.info/sct",
+              "code": "1145374006",
+              "display": "Focal white matter lesion"
+            }
+          ],
+          "text": "T2 Lesion Measures"
+        },
+        "subject": {
+          "reference": "Patient/pat-abc-1001"
+        },
+        "effectiveDateTime": "2022-03-01",
+        "bodySite": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "68523003",
+              "display": "Cerebral white matter structure"
+            }
+          ],
+          "text": "Cerebral white matter structure"
+        },
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "t2-lesion-volume",
+                  "display": "Total T2 Lesion Volume"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 4.2,
+              "unit": "mL",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "t2-over-brain-volume",
+                  "display": "T2 Lesion Load / Brain Volume"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 0.1034,
+              "unit": "{ratio}",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "t2-juxtacortical",
+                  "display": "Juxtacortical T2 Lesion Volume"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 1.1,
+              "unit": "mL",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "t2-periventricular",
+                  "display": "Periventricular T2 Lesion Volume"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 2.3,
+              "unit": "mL",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "t2-infratentorial",
+                  "display": "Infratentorial T2 Lesion Volume"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 0.45,
+              "unit": "mL",
+              "system": "http://unitsofmeasure.org"
+            }
+          }
+        ]
+      },
+      "fullUrl": "urn:uuid:c81fefd673fe752a762efc63cf758746"
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-mri-lesions-abc-1001-2023-01-05",
+        "meta": {
+          "profile": [
+            "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-MRI-Lesions"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "urn:oid:2.16.840.1.113883.3.digiphenoms.module",
+            "value": "obs-mri-lesions-abc-1001-2023-01-05"
+          }
+        ],
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "imaging"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+              "code": "mri-t2-lesions",
+              "display": "T2 Lesion Measures"
+            }
+          ],
+          "text": "T2 Lesion Measures"
+        },
+        "subject": {
+          "reference": "Patient/pat-abc-1001"
+        },
+        "effectiveDateTime": "2023-01-05",
+        "bodySite": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "68523003",
+              "display": "Cerebral white matter structure"
+            }
+          ],
+          "text": "Cerebral white matter structure"
+        },
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "t2-lesion-volume",
+                  "display": "Total T2 Lesion Volume"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 8.9,
+              "unit": "mL",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "t2-over-brain-volume",
+                  "display": "T2 Lesion Load / Brain Volume"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 0.0611,
+              "unit": "{ratio}",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "new-t2-lesion-count",
+                  "display": "New/Enlarged T2 Lesion Count"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 6.0,
+              "unit": "{count}",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "new-t2-lesion-volume",
+                  "display": "New/Enlarged T2 Lesion Volume"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 0.123,
+              "unit": "mL",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "t2-juxtacortical",
+                  "display": "Juxtacortical T2 Lesion Volume"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 10.24,
+              "unit": "mL",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "t2-periventricular",
+                  "display": "Periventricular T2 Lesion Volume"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 8.9,
+              "unit": "mL",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "t2-infratentorial",
+                  "display": "Infratentorial T2 Lesion Volume"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 1.32,
+              "unit": "mL",
+              "system": "http://unitsofmeasure.org"
+            }
+          }
+        ]
+      },
+      "fullUrl": "urn:uuid:4741617116919d3e347fecc758bf7e7c"
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-mri-lesions-abc-1002-2022-03-08",
+        "meta": {
+          "profile": [
+            "https://digiphenoms.tu-dresden.de/fhir/StructureDefinition/DigiPhenoMS-MRI-Lesions"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "urn:oid:2.16.840.1.113883.3.digiphenoms.module",
+            "value": "obs-mri-lesions-abc-1002-2022-03-08"
+          }
+        ],
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "imaging"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+              "code": "mri-t2-lesions",
+              "display": "T2 Lesion Measures"
+            }
+          ],
+          "text": "T2 Lesion Measures"
+        },
+        "subject": {
+          "reference": "Patient/pat-abc-1002"
+        },
+        "effectiveDateTime": "2022-03-08",
+        "bodySite": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "68523003",
+              "display": "Cerebral white matter structure"
+            }
+          ],
+          "text": "Cerebral white matter structure"
+        },
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "t2-lesion-volume",
+                  "display": "Total T2 Lesion Volume"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 12.5,
+              "unit": "mL",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "t2-over-brain-volume",
+                  "display": "T2 Lesion Load / Brain Volume"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 0.010653,
+              "unit": "{ratio}",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "t2-juxtacortical",
+                  "display": "Juxtacortical T2 Lesion Volume"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 6.8,
+              "unit": "mL",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "t2-periventricular",
+                  "display": "Periventricular T2 Lesion Volume"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 2.5,
+              "unit": "mL",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "t2-infratentorial",
+                  "display": "Infratentorial T2 Lesion Volume"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 0.31,
+              "unit": "mL",
+              "system": "http://unitsofmeasure.org"
+            }
+          }
+        ]
+      },
+      "fullUrl": "urn:uuid:6420b6f8be33b455fcdad26ea6a55101"
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-mri-tissue-abc-1001-2022-03-01",
+        "identifier": [
+          {
+            "system": "urn:oid:2.16.840.1.113883.3.digiphenoms.module",
+            "value": "obs-mri-tissue-abc-1001-2022-03-01"
+          }
+        ],
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "imaging"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+              "code": "mri-tissue-fractions",
+              "display": "Brain Tissue Fractions"
+            }
+          ],
+          "text": "Brain Tissue Fractions"
+        },
+        "subject": {
+          "reference": "Patient/pat-abc-1001"
+        },
+        "effectiveDateTime": "2022-03-01",
+        "bodySite": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "12738006",
+              "display": "Brain structure"
+            }
+          ],
+          "text": "Brain structure"
+        },
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "grey-matter-fraction",
+                  "display": "Grey Matter Fraction"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 0.8,
+              "unit": "{ratio}",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "white-matter-fraction",
+                  "display": "White Matter Fraction"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 0.33,
+              "unit": "{ratio}",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "cortical-gm-volume",
+                  "display": "Cortical Grey Matter Volume"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 520.3,
+              "unit": "mL",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "deep-gm-volume",
+                  "display": "Deep Grey Matter Volume"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 48.7,
+              "unit": "mL",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "cortical-gm-fraction",
+                  "display": "Cortical Grey Matter Fraction"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 0.38,
+              "unit": "{ratio}",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "deep-gm-fraction",
+                  "display": "Deep Grey Matter Fraction"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 0.036,
+              "unit": "{ratio}",
+              "system": "http://unitsofmeasure.org"
+            }
+          }
+        ]
+      },
+      "fullUrl": "urn:uuid:5c4916859888e2b1ccc634e6a08e539e"
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-mri-tissue-abc-1001-2023-01-05",
+        "identifier": [
+          {
+            "system": "urn:oid:2.16.840.1.113883.3.digiphenoms.module",
+            "value": "obs-mri-tissue-abc-1001-2023-01-05"
+          }
+        ],
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "imaging"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+              "code": "mri-tissue-fractions",
+              "display": "Brain Tissue Fractions"
+            }
+          ],
+          "text": "Brain Tissue Fractions"
+        },
+        "subject": {
+          "reference": "Patient/pat-abc-1001"
+        },
+        "effectiveDateTime": "2023-01-05",
+        "bodySite": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "12738006",
+              "display": "Brain structure"
+            }
+          ],
+          "text": "Brain structure"
+        },
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "grey-matter-fraction",
+                  "display": "Grey Matter Fraction"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 0.423,
+              "unit": "{ratio}",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "white-matter-fraction",
+                  "display": "White Matter Fraction"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 0.36,
+              "unit": "{ratio}",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "cortical-gm-volume",
+                  "display": "Cortical Grey Matter Volume"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 322.4,
+              "unit": "mL",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "deep-gm-volume",
+                  "display": "Deep Grey Matter Volume"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 33.8,
+              "unit": "mL",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "cortical-gm-fraction",
+                  "display": "Cortical Grey Matter Fraction"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 0.44,
+              "unit": "{ratio}",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "deep-gm-fraction",
+                  "display": "Deep Grey Matter Fraction"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 0.078,
+              "unit": "{ratio}",
+              "system": "http://unitsofmeasure.org"
+            }
+          }
+        ]
+      },
+      "fullUrl": "urn:uuid:3cae6e032710399ba53207118cc5be7c"
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-mri-tissue-abc-1002-2022-03-08",
+        "identifier": [
+          {
+            "system": "urn:oid:2.16.840.1.113883.3.digiphenoms.module",
+            "value": "obs-mri-tissue-abc-1002-2022-03-08"
+          }
+        ],
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "imaging"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+              "code": "mri-tissue-fractions",
+              "display": "Brain Tissue Fractions"
+            }
+          ],
+          "text": "Brain Tissue Fractions"
+        },
+        "subject": {
+          "reference": "Patient/pat-abc-1002"
+        },
+        "effectiveDateTime": "2022-03-08",
+        "bodySite": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "12738006",
+              "display": "Brain structure"
+            }
+          ],
+          "text": "Brain structure"
+        },
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "grey-matter-fraction",
+                  "display": "Grey Matter Fraction"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 0.41,
+              "unit": "{ratio}",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "white-matter-fraction",
+                  "display": "White Matter Fraction"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 485.1,
+              "unit": "{ratio}",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "cortical-gm-volume",
+                  "display": "Cortical Grey Matter Volume"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 44.2,
+              "unit": "mL",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "deep-gm-volume",
+                  "display": "Deep Grey Matter Volume"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 0.35,
+              "unit": "mL",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "cortical-gm-fraction",
+                  "display": "Cortical Grey Matter Fraction"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 0.032,
+              "unit": "{ratio}",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "deep-gm-fraction",
+                  "display": "Deep Grey Matter Fraction"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 10.8,
+              "unit": "{ratio}",
+              "system": "http://unitsofmeasure.org"
+            }
+          }
+        ]
+      },
+      "fullUrl": "urn:uuid:d27b2ce488faa913f0fc6aff2bef8fdf"
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-mri-thalamus-abc-1001-2022-03-01",
+        "identifier": [
+          {
+            "system": "urn:oid:2.16.840.1.113883.3.digiphenoms.module",
+            "value": "obs-mri-thalamus-abc-1001-2022-03-01"
+          }
+        ],
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "imaging"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+              "code": "mri-thalamus",
+              "display": "Thalamus Volumetry"
+            }
+          ],
+          "text": "Thalamus Volumetry"
+        },
+        "subject": {
+          "reference": "Patient/pat-abc-1001"
+        },
+        "effectiveDateTime": "2022-03-01",
+        "bodySite": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "42695009",
+              "display": "Thalamic structure"
+            }
+          ],
+          "text": "Thalamic structure"
+        },
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "thalamus-volume",
+                  "display": "Thalamus Volume"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 12.4,
+              "unit": "mL",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "thalamus-fraction",
+                  "display": "Thalamus Fraction"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 0.245,
+              "unit": "{ratio}",
+              "system": "http://unitsofmeasure.org"
+            }
+          }
+        ]
+      },
+      "fullUrl": "urn:uuid:275684cf0b2cf9d704c42f2baab5b00f"
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-mri-thalamus-abc-1001-2023-01-05",
+        "identifier": [
+          {
+            "system": "urn:oid:2.16.840.1.113883.3.digiphenoms.module",
+            "value": "obs-mri-thalamus-abc-1001-2023-01-05"
+          }
+        ],
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "imaging"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+              "code": "mri-thalamus",
+              "display": "Thalamus Volumetry"
+            }
+          ],
+          "text": "Thalamus Volumetry"
+        },
+        "subject": {
+          "reference": "Patient/pat-abc-1001"
+        },
+        "effectiveDateTime": "2023-01-05",
+        "bodySite": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "42695009",
+              "display": "Thalamic structure"
+            }
+          ],
+          "text": "Thalamic structure"
+        },
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "thalamus-volume",
+                  "display": "Thalamus Volume"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 8.9,
+              "unit": "mL",
+              "system": "http://unitsofmeasure.org"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "thalamus-fraction",
+                  "display": "Thalamus Fraction"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 0.245,
+              "unit": "{ratio}",
+              "system": "http://unitsofmeasure.org"
+            }
+          }
+        ]
+      },
+      "fullUrl": "urn:uuid:870ef4effb371fdc5672d7616757fbd2"
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-mri-thalamus-abc-1002-2022-03-08",
+        "identifier": [
+          {
+            "system": "urn:oid:2.16.840.1.113883.3.digiphenoms.module",
+            "value": "obs-mri-thalamus-abc-1002-2022-03-08"
+          }
+        ],
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "imaging"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+              "code": "mri-thalamus",
+              "display": "Thalamus Volumetry"
+            }
+          ],
+          "text": "Thalamus Volumetry"
+        },
+        "subject": {
+          "reference": "Patient/pat-abc-1002"
+        },
+        "effectiveDateTime": "2022-03-08",
+        "bodySite": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "42695009",
+              "display": "Thalamic structure"
+            }
+          ],
+          "text": "Thalamic structure"
+        },
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+                  "code": "thalamus-fraction",
+                  "display": "Thalamus Fraction"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 0.236,
+              "unit": "{ratio}",
+              "system": "http://unitsofmeasure.org"
+            }
+          }
+        ]
+      },
+      "fullUrl": "urn:uuid:050f95df0ba9691be0f45e1393ed987c"
+    }
+  ],
+  "meta": {
+    "tag": [
+      {
+        "system": "https://digiphenoms.tu-dresden.de/fhir/CodeSystem/digiphenoms",
+        "code": "synthetic-demo-data",
+        "display": "Synthetische Demo-Daten — keine echten Patientendaten"
+      }
+    ]
+  }
+}
