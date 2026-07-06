@@ -463,19 +463,19 @@ class TestChronologyFix:
     def test_inverted_encounter_period_swapped(self, builder, wrapper_mapping, inverted_row):
         encounter_target = wrapper_mapping.targets[0]
         resource = builder.build(inverted_row, encounter_target)
-        # Validated resources carry datetime objects
+        # Validated resources carry JSON-native FHIR datetime strings
         period = resource["period"]
         assert period["start"] < period["end"]
-        assert period["start"].isoformat().startswith("2022-03-14T08:00:00")
-        assert period["end"].isoformat().startswith("2022-03-14T08:20:00")
+        assert period["start"].startswith("2022-03-14T08:00:00")
+        assert period["end"].startswith("2022-03-14T08:20:00")
 
     def test_chronological_period_untouched(self, builder, wrapper_mapping, inverted_row):
         row = inverted_row.copy()
         row["Assessment Started At"] = "Mon, 14 Mar 2022 08:00:00 +0000"
         row["Assessment Ended At"] = "Mon, 14 Mar 2022 08:20:00 +0000"
         resource = builder.build(row, wrapper_mapping.targets[0])
-        assert resource["period"]["start"].isoformat().startswith("2022-03-14T08:00:00")
-        assert resource["period"]["end"].isoformat().startswith("2022-03-14T08:20:00")
+        assert resource["period"]["start"].startswith("2022-03-14T08:00:00")
+        assert resource["period"]["end"].startswith("2022-03-14T08:20:00")
 
     def test_fix_disabled_via_config(self, pipeline_cfg, config_dir, wrapper_mapping, inverted_row):
         from digiphenoms_fhir.mapper import ResourceBuilder
@@ -484,8 +484,8 @@ class TestChronologyFix:
         builder = ResourceBuilder(pipeline_cfg, config_dir)
         resource = builder.build(inverted_row, wrapper_mapping.targets[0])
         # Inverted period is preserved when the guard is switched off
-        assert resource["period"]["start"].isoformat().startswith("2022-03-14T08:20:00")
-        assert resource["period"]["end"].isoformat().startswith("2022-03-14T08:00:00")
+        assert resource["period"]["start"].startswith("2022-03-14T08:20:00")
+        assert resource["period"]["end"].startswith("2022-03-14T08:00:00")
 
     def test_nested_periods_fixed(self, builder):
         resource = {

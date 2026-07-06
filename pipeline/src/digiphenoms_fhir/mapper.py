@@ -582,6 +582,11 @@ class ResourceBuilder:
         Applies pre-validation cleanup (empty strings, structural fixes) before
         passing through the ``fhir.resources.R4B`` pydantic model.  Returns the
         validated dict, or the original dict with a warning on failure.
+
+        The dump uses ``mode="json"`` so every value is JSON-native (datetimes
+        as FHIR strings, decimals as numbers) — resources must survive
+        ``json.dumps`` without custom encoders for bundle files and for the
+        ``$cohort-submit`` HTTP body.
         """
         if self._fix_chronology:
             self._fix_period_chronology(resource_dict)
@@ -593,7 +598,7 @@ class ResourceBuilder:
             )
             model_cls = getattr(mod, resource_type)
             model = model_cls.model_validate(resource_dict)
-            return model.model_dump(exclude_none=True)
+            return model.model_dump(mode="json", exclude_none=True)
         except Exception as exc:
             logger.warning("FHIR model validation for %s: %s", resource_type, exc)
             return resource_dict

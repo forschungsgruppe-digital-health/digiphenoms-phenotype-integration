@@ -593,11 +593,11 @@ class TestNeuroQoLDetailMapping:
         qr = next(r for r in resources if r["id"] == "qr-nq-assess-2001-sleep")
         assert qr["subject"]["reference"] == "Patient/pat-abc-1001"
         assert qr["encounter"]["reference"] == "Encounter/enc-assess-2001"
-        # Validated resources carry datetime objects; the timezone offset is
-        # appended during cleanup (R4B dateTime requirement)
-        authored = qr["authored"].isoformat()
+        # Validated resources carry FHIR datetime strings; the timezone
+        # offset is appended during cleanup (R4B dateTime requirement)
+        authored = qr["authored"]
         assert authored.startswith("2022-03-14T08:06:30")
-        assert "+00:00" in authored
+        assert authored.endswith("Z") or "+00:00" in authored
 
     def test_tscore_observation_values(self, resources):
         obs = next(r for r in resources if r["id"] == "obs-nq-assess-2001-sleep")
@@ -664,7 +664,7 @@ class TestMedicalHistoryMapping:
         assert "answer" not in items[3]
 
     def test_authored_from_module_start(self, resources):
-        assert resources[0]["authored"].isoformat().startswith("2022-03-14T08:00:00")
+        assert resources[0]["authored"].startswith("2022-03-14T08:00:00")
 
 
 class TestValidationRegressions:
@@ -721,3 +721,11 @@ class TestValidationRegressions:
                 assert pattern.match(resource["id"]), (
                     f"{step}: invalid FHIR id {resource['id']!r}"
                 )
+
+    def test_all_resources_json_serializable_without_encoder(self, pipeline, fixtures_dir):
+        """Resources must survive json.dumps as-is — httpx serializes the
+        $cohort-submit body with the stdlib encoder (no default=str)."""
+        results = pipeline.run(data_dir=fixtures_dir)
+        for step, resources in results.items():
+            for resource in resources:
+                json.dumps(resource)
