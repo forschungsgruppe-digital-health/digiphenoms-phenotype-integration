@@ -52,7 +52,17 @@ services:
     ports:
       - "${FHIR_PORT:-8080}:${SERVER_PORT:-8080}"
     healthcheck:
-      test: ["CMD-SHELL", "curl -sf http://localhost:${SERVER_PORT:-8080}/fhir/metadata || exit 1"]
+      # distroless image: no shell/curl — probe via the JVM helper shipped
+      # in the extension jar
+      test:
+        [
+          "CMD",
+          "java",
+          "-cp",
+          "/app/extra-classes/digiphenoms-extension.jar",
+          "de.tud.fgdh.digiphenoms.fhir.HealthCheck",
+          "http://localhost:${SERVER_PORT:-8080}/fhir/metadata",
+        ]
       interval: 15s
       timeout: 10s
       retries: 10
@@ -77,11 +87,11 @@ services:
       - "host.docker.internal:host-gateway"
     volumes:
       - ${DATA_DIR:-./data}:/data
+    # arguments only — the image ENTRYPOINT is already digiphenoms-fhir
     command: >
-      digiphenoms-fhir
-        --config /app/config
-        --data /data
-        --submit
+      --config /app/config
+      --data /data
+      --submit
 
 volumes:
   pgdata:

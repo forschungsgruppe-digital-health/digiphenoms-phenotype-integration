@@ -17,5 +17,7 @@ RUN mvn package -DskipTests -B
 FROM hapiproject/hapi:v8.10.0-2
 
 USER root
-COPY --from=build /build/target/digiphenoms-cohort-submit-*.jar /app/extra-classes/
+# Fixed jar name: referenced by the compose healthcheck (distroless image —
+# the only way to health-probe is `java -cp <jar> …HealthCheck`)
+COPY --from=build /build/target/digiphenoms-cohort-submit-*.jar /app/extra-classes/digiphenoms-extension.jar
 USER 65532
